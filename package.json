@@ -1,0 +1,25 @@
+{
+  "name": "doix-db-postgresql",
+  "version": "0.0.1",
+  "description": "PostgreSQL support for doix",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/do-/node-doix-db-postgresql.git"
+  },
+  "author": "Dmitry Ovsyanko",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/do-/node-doix-db-postgresql/issues"
+  },
+  "homepage": "https://github.com/do-/node-doix-db-postgresql#readme",
+  "peerDependencies": {
+    "doix": "^0.0.34"
+  },
+  "dependencies": {
+    "pg": "^8.8.0"
+  }
+}
