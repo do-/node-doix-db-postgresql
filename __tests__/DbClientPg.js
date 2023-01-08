@@ -3,7 +3,7 @@ const DbClientPg = require ('../lib/DbClientPg')
 
 let db = {}
 beforeAll(async () => {
-	const client = new Client ({connectionString: 'postgresql://postgres:z@localhost:5432/db_empty'})
+	const client = new Client ({connectionString: process.env.CONNECTION_STRING})
 	await client.connect()
 	client.release = client.end
 	db = new DbClientPg (client)
