@@ -21,6 +21,26 @@
     "doix-db": "^0.0.1"
   },
   "dependencies": {
+    "only": "^0.0.2",
     "pg": "^8.8.0"
+  },
+  "devDependencies": {
+    "jest": "^29.3.1"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "lib/**/*.js"
+    ],
+    "coverageReporters": [
+      "clover",
+      "json",
+      "lcov",
+      "text",
+      "json-summary"
+    ],
+    "verbose": false,
+    "testPathIgnorePatterns": [
+      "/node_modules/"
+    ]
   }
 }
