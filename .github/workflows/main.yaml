@@ -1,8 +1,10 @@
 name: e2e tests
-on: push
+on:
+  - push
+  - pull_request
 
 jobs:
-  container-job:
+  e2e:
     runs-on: ubuntu-latest
     container: library/node:16-alpine
 
@@ -18,8 +20,14 @@ jobs:
           --health-retries 5
 
     steps:
+      - name: Install git for jest-badges-action
+        run: apk --no-cache add git
+
+      - name: Config git
+        run: git config --global --add safe.directory '*'
+
       - name: Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3.1.0
 
       - name: Install dependencies
         run: npm ci
@@ -28,3 +36,6 @@ jobs:
         run: npm run test-ci
         env:
           CONNECTION_STRING: 'postgresql://postgres:postgres@postgres:5432'
+
+      - name: Generating coverage badges
+        uses: jpb06/jest-badges-action@latest
