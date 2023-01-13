@@ -1,7 +1,7 @@
 //const {Client} = require ('pg')
 
 const EventEmitter = require ('events')
-const {DbClientPg, DbPoolPg} = require ('..')
+const {DbClientPg, DbPoolPg} = require ('..'), {normalizeSQL} = DbClientPg
 
 const job = new EventEmitter ()
 job.uuid = '00000000-0000-0000-0000-000000000000'
@@ -16,6 +16,18 @@ const pool = new DbPoolPg ({
 afterAll(async () => {
 
 	await pool.pool.end ()
+
+})
+
+test ('normalizeSQL', () => {
+
+	expect (normalizeSQL ('SELECT 1')).toBe ('SELECT 1')
+
+	expect (normalizeSQL ('SELECT * FROM t WHERE id = ?')).toBe ('SELECT * FROM t WHERE id = $1')
+	
+	expect (normalizeSQL ('SELECT * FROM t WHERE id = ? AND label LIKE ?')).toBe ('SELECT * FROM t WHERE id = $1 AND label LIKE $2')
+
+	expect (normalizeSQL ('SELECT * FROM t WHERE id::jsonb ? ? AND label LIKE ?')).toBe ('SELECT * FROM t WHERE id::jsonb ? $1 AND label LIKE $2')
 
 })
 
@@ -36,13 +48,13 @@ test ('e7707', async () => {
 	
 })
 
-test ('selectArray 1', async () => {
+test ('getArray 1', async () => {
 	
 	try {
 	
 		var db = await pool.toSet (job, 'db')
 
-		const a = await db.selectArray ('SELECT 1 AS id')
+		const a = await db.getArray ('SELECT 1 AS id')
 
 		expect (a).toStrictEqual ([{id: 1}])
 
@@ -55,7 +67,7 @@ test ('selectArray 1', async () => {
 	
 })
 
-test ('selectArray 1 into', async () => {
+test ('getArray 1 into', async () => {
 	
 	try {
 	
@@ -63,7 +75,7 @@ test ('selectArray 1 into', async () => {
 
 		const into = [1]	
 	
-		const a = await db.selectArray ('SELECT 1 AS id', [], {into})
+		const a = await db.getArray ('SELECT 1 AS id', [], {into})
 
 		expect (a).toBe (into)
 
@@ -92,11 +104,11 @@ test ('drop create insert select', async () => {
 
 			`CREATE TABLE ${dst} (id INT)`,
 
-			`INSERT INTO ${dst} (id) VALUES (${id})`,
-
 		]) await db.do (sql)
+		
+		await db.do (`INSERT INTO ${dst} (id) VALUES (?)`, [id])
 
-		const a = await db.selectArray (`SELECT * FROM ${dst}`)
+		const a = await db.getArray (`SELECT * FROM ${dst} WHERE id = ?`, [id])
 
 		expect (a).toStrictEqual ([{id}])
 
