@@ -1,33 +1,110 @@
-const {Client} = require ('pg')
-const DbClientPg = require ('../lib/DbClientPg')
+//const {Client} = require ('pg')
 
-let db = {}
-beforeAll(async () => {
-	const client = new Client ({connectionString: process.env.CONNECTION_STRING})
-	await client.connect()
-	client.release = client.end
-	db = new DbClientPg (client)
-	db.on ('error', x => {throw x})
+const EventEmitter = require ('events')
+const {DbClientPg, DbPoolPg} = require ('..')
+
+const job = new EventEmitter ()
+job.uuid = '00000000-0000-0000-0000-000000000000'
+job.logger = {log: ({message, level}) => {if (false) console.log (level + ' ' + message)}}
+
+const pool = new DbPoolPg ({
+	db: {
+		connectionString: process.env.CONNECTION_STRING,
+	},
 })
 
 afterAll(async () => {
-	await db.release ()
+
+	await pool.pool.end ()
+
 })
 
-test ('SELECT 1', async () => {
-	let r = await db.do ('SELECT 1 AS id')
-	expect (r.rows [0]).toStrictEqual ({id: 1})
-})
+test ('e7707', async () => {
+	
+	try {
+	
+		var db = await pool.toSet (job, 'db')
+				
+		await expect (db.do ('...')).rejects.toThrow ()
 
-test ('SELECT FROM voc_some', async () => {
-	for (let s of [
-		{sql: `DROP TABLE IF EXISTS voc_some`},
-		{sql: `CREATE TABLE voc_some (id int PRIMARY KEY, code TEXT, label TEXT)`},
-		{sql: `INSERT INTO voc_some (id, code, label) VALUES (1, 'foo', 'barbar')`},
-	]) {
-		await db.do (s.sql, s.params)
+	}
+	finally {
+
+		await db.release ()
+
 	}
 	
-	let r = await db.do ('SELECT id, code, label FROM voc_some')
-	expect (r.rows).toStrictEqual ([{id: 1, code: 'foo', label: 'barbar'}])
+})
+
+test ('selectArray 1', async () => {
+	
+	try {
+	
+		var db = await pool.toSet (job, 'db')
+
+		const a = await db.selectArray ('SELECT 1 AS id')
+
+		expect (a).toStrictEqual ([{id: 1}])
+
+	}
+	finally {
+
+		await db.release ()
+
+	}
+	
+})
+
+test ('selectArray 1 into', async () => {
+	
+	try {
+	
+		var db = await pool.toSet (job, 'db')
+
+		const into = [1]	
+	
+		const a = await db.selectArray ('SELECT 1 AS id', [], {into})
+
+		expect (a).toBe (into)
+
+		expect (a).toStrictEqual ([1, {id: 1}])
+
+	}
+	finally {
+
+		await db.release ()
+
+	}
+	
+})
+
+test ('drop create insert select', async () => {
+
+	const dst = 'my_table', id = Math.floor (Math.random (10))
+
+	try {
+
+		var db = await pool.toSet (job, 'db')
+
+		for (const sql of [
+
+			`DROP TABLE IF EXISTS ${dst}`,
+
+			`CREATE TABLE ${dst} (id INT)`,
+
+			`INSERT INTO ${dst} (id) VALUES (${id})`,
+
+		]) await db.do (sql)
+
+		const a = await db.selectArray (`SELECT * FROM ${dst}`)
+
+		expect (a).toStrictEqual ([{id}])
+
+	}
+	finally {
+
+		await db.release ()
+
+	}
+	
 })
