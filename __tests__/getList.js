@@ -1,5 +1,3 @@
-//const {Client} = require ('pg')
-
 const EventEmitter = require ('events')
 const {DbClientPg, DbPoolPg} = require ('..'), {normalizeSQL} = DbClientPg
 
