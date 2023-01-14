@@ -40,17 +40,38 @@ test ('e7707', async () => {
 	
 })
 
-test ('getStream 1', async () => {
+test ('one record', async () => {
 	
 	try {
 	
 		var db = await pool.toSet (job, 'db')
 
-		const s = await db.getStream ('SELECT 1 id')
+		const s = await db.getStream ('SELECT 1 id', [])
 
 		const a = []; for await (const r of s) a.push (r)
 
 		expect (a).toStrictEqual ([{id: 1}])
+
+	}
+	finally {
+
+		await db.release ()
+
+	}
+	
+})
+
+test ('arrays', async () => {
+	
+	try {
+	
+		var db = await pool.toSet (job, 'db')
+
+		const s = await db.getStream ('SELECT * FROM generate_series (?::int, ?) id', [1, 10], {rowMode: 'array'})
+
+		const a = []; for await (const r of s) a.push (r)
+
+		expect (a).toStrictEqual ([[1], [2], [3], [4], [5], [6], [7], [8], [9], [10]])
 
 	}
 	finally {
