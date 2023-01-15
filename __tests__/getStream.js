@@ -1,5 +1,5 @@
 const EventEmitter = require ('events')
-const {DbClientPg, DbPoolPg} = require ('..'), {normalizeSQL} = DbClientPg
+const {DbClientPg, DbPoolPg} = require ('..')
 
 const job = new EventEmitter ()
 job.uuid = '00000000-0000-0000-0000-000000000000'

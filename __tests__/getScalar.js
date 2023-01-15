@@ -23,7 +23,7 @@ test ('e7707', async () => {
 	
 		var db = await pool.toSet (job, 'db')
 
-		const s = await db.getObject ('...')	
+		const s = await db.getScalar ('...')	
 
 	}
 	catch (x) {
@@ -45,9 +45,9 @@ test ('sequence', async () => {
 	
 		var db = await pool.toSet (job, 'db')
 
-		const o = await db.getObject ('SELECT * FROM generate_series (?::int, ?) id', [1, 10])
+		const o = await db.getScalar ('SELECT * FROM generate_series (?::int, ?) id', [1, 10])
 
-		expect (o).toStrictEqual ({id: 1})
+		expect (o).toBe (1)
 
 	}
 	finally {
@@ -64,28 +64,9 @@ test ('1-to-1', async () => {
 	
 		var db = await pool.toSet (job, 'db')
 
-		const o = await db.getObject ('SELECT 1 id', [])
+		const o = await db.getScalar ('SELECT 1 id', [])
 
-		expect (o).toStrictEqual ({id: 1})
-
-	}
-	finally {
-
-		await db.release ()
-
-	}
-	
-})
-
-test ('1 array', async () => {
-	
-	try {
-	
-		var db = await pool.toSet (job, 'db')
-
-		const o = await db.getObject ('SELECT 1 id', [], {rowMode: 'array'})
-
-		expect (o).toStrictEqual ([1])
+		expect (o).toBe (1)
 
 	}
 	finally {
@@ -102,9 +83,9 @@ test ('default', async () => {
 	
 		var db = await pool.toSet (job, 'db')
 
-		const o = await db.getObject ('SELECT 1 id WHERE false', [])
+		const o = await db.getScalar ('SELECT 1 id WHERE false', [])
 
-		expect (o).toStrictEqual ({})
+		expect (o).toBeUndefined ()
 
 	}
 	finally {
@@ -120,10 +101,10 @@ test ('custom default', async () => {
 	try {
 	
 		var db = await pool.toSet (job, 'db')
-		
-		const DEF = {id: -1}
 
-		const o = await db.getObject ('SELECT 1 id WHERE false', [], {notFound: DEF})
+		const DEF = -1
+
+		const o = await db.getScalar ('SELECT 1 id WHERE false', [], {notFound: DEF})
 
 		expect (o).toBe (DEF)
 
@@ -144,7 +125,7 @@ test ('custom error', async () => {
 	
 		var db = await pool.toSet (job, 'db')
 		
-		const o = await db.getObject ('SELECT 1 id WHERE false', [], {notFound: DEF})
+		const o = await db.getScalar ('SELECT 1 id WHERE false', [], {notFound: DEF})
 
 	}
 	catch (x) {
