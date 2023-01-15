@@ -44,9 +44,11 @@ test ('getArray 1', async () => {
 	
 		var db = await pool.toSet (job, 'db')
 
-		const a = await db.getArray ('SELECT 1 AS id')
+		const a = await db.getArray ('SELECT 1::int4 AS id')
 
 		expect (a).toStrictEqual ([{id: 1}])
+
+		expect (a[Symbol.for ('columns')] [0].type).toBe ('int4')
 
 	}
 	finally {
