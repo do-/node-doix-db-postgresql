@@ -141,11 +141,11 @@ test ('custom error', async () => {
 		var db = await pool.toSet (job, 'db')
 		
 		const o = await db.getObject ('SELECT 1 id WHERE false', [], {notFound: DEF})
-
+	
 	}
 	catch (x) {
 
-		expect (x.cause).toBe (DEF)
+		expect (x).toBe (DEF)
 
 	}
 	finally {
