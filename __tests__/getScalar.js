@@ -126,7 +126,7 @@ test ('custom error', async () => {
 	}
 	catch (x) {
 
-		expect (x.cause).toBe (DEF)
+		expect (x).toBe (DEF)
 
 	}
 	finally {

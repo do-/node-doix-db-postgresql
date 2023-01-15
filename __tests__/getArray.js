@@ -22,6 +22,7 @@ test ('e7707', async () => {
 		await expect (db.do ('...')).rejects.toThrow ()
 		await expect (db.getArray ('SELECT 1 AS id', [], {maxRows: -1})).rejects.toThrow ()
 		await expect (db.getArray ('SELECT 1 AS id', [], {maxRows: Infinity})).rejects.toThrow ()
+		await expect (db.getArray ('SELECT 1 AS id', [], {rowMode: 'whatever'})).rejects.toThrow ()
 
 	}
 	finally {
@@ -60,6 +61,25 @@ test ('getArray 1 array', async () => {
 		const a = await db.getArray ('SELECT 1 AS id', [], {rowMode: 'array'})
 
 		expect (a).toStrictEqual ([[1]])
+
+	}
+	finally {
+
+		await db.release ()
+
+	}
+	
+})
+
+test ('getArray 1 scalar', async () => {
+	
+	try {
+	
+		var db = await pool.toSet (job, 'db')
+
+		const a = await db.getArray ('SELECT 1 AS id', [], {rowMode: 'scalar'})
+
+		expect (a).toStrictEqual ([1])
 
 	}
 	finally {
