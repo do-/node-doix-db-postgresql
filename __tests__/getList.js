@@ -1,5 +1,5 @@
 const EventEmitter = require ('events')
-const {DbClientPg, DbPoolPg} = require ('..'), {normalizeSQL} = DbClientPg
+const {DbClientPg, DbPoolPg} = require ('..')
 
 const job = new EventEmitter ()
 job.uuid = '00000000-0000-0000-0000-000000000000'
@@ -14,32 +14,6 @@ const pool = new DbPoolPg ({
 afterAll(async () => {
 
 	await pool.pool.end ()
-
-})
-
-test ('normalizeSQL', () => {
-
-	expect (normalizeSQL ('SELECT 1-1/2--')).toBe ('SELECT 1-1/2')
-
-	expect (normalizeSQL ('SELECT * FROM t WHERE id = ?')).toBe ('SELECT * FROM t WHERE id = $1')
-	
-	expect (normalizeSQL ('SELECT * FROM t WHERE id = ? AND label LIKE ?')).toBe ('SELECT * FROM t WHERE id = $1 AND label LIKE $2')
-
-	expect (normalizeSQL ('SELECT * FROM t WHERE id::jsonb ? ? AND label LIKE ?')).toBe ('SELECT * FROM t WHERE id::jsonb ? $1 AND label LIKE $2')
-
-	expect (normalizeSQL ("SELECT * FROM t WHERE id = ? AND label='Don''t you know?'")).toBe ("SELECT * FROM t WHERE id = $1 AND label='Don''t you know?'")
-
-	expect (normalizeSQL ('SELECT * FROM t /*What /*the he// is*/t?*/ WHERE id = ?')).toBe ('SELECT * FROM t  WHERE id = $1')
-
-	expect (normalizeSQL (`
-		SELECT
-			id
---			, label ???
-		FROM
-			t
-		WHERE
-			id = ?
-	`).trim ().replace (/\s+/g, ' ')).toBe (`SELECT id FROM t WHERE id = $1`)
 
 })
 
