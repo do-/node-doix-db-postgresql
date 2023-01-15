@@ -107,16 +107,16 @@ test ('1001', async () => {
 	try {
 	
 		var db = await pool.toSet (job, 'db')
-
-		const a1000 = await db.getArray ('SELECT * FROM generate_series (?::int, ?) id', [1, 1000])
 		
-		expect (a1000).toHaveLength (1000)
+		const sql = 'SELECT * FROM generate_series (?::int, ?) id'
+		
+		const get = async (n, o = {}) => db.getArray (sql, [1, n], o)
+		
+		expect (await get (1000)).toHaveLength (1000)
+		expect (await get (1001, {isPartial: true})).toHaveLength (1000)
+		expect (await get (1001, {maxRows: 2000})).toHaveLength (1001)
 
-		const a1001 = await db.getArray ('SELECT * FROM generate_series (?::int, ?) id', [1, 1001], {maxRows: 2000})
-
-		expect (a1001).toHaveLength (1001)
-
-		await db.getArray ('SELECT * FROM generate_series (?::int, ?) id', [1, 1001])
+		await get (1001)
 
 	}
 	catch (x) {
