@@ -20,6 +20,8 @@ test ('e7707', async () => {
 		var db = await pool.toSet (job, 'db')
 				
 		await expect (db.do ('...')).rejects.toThrow ()
+		await expect (db.getArray ('SELECT 1 AS id', [], {maxRows: -1})).rejects.toThrow ()
+		await expect (db.getArray ('SELECT 1 AS id', [], {maxRows: Infinity})).rejects.toThrow ()
 
 	}
 	finally {
@@ -39,6 +41,25 @@ test ('getArray 1', async () => {
 		const a = await db.getArray ('SELECT 1 AS id')
 
 		expect (a).toStrictEqual ([{id: 1}])
+
+	}
+	finally {
+
+		await db.release ()
+
+	}
+	
+})
+
+test ('getArray 1 array', async () => {
+	
+	try {
+	
+		var db = await pool.toSet (job, 'db')
+
+		const a = await db.getArray ('SELECT 1 AS id', [], {rowMode: 'array'})
+
+		expect (a).toStrictEqual ([[1]])
 
 	}
 	finally {
@@ -71,6 +92,37 @@ test ('drop create insert select', async () => {
 
 		expect (a).toStrictEqual ([{id}])
 
+	}
+	finally {
+
+		await db.release ()
+
+	}
+	
+})
+
+
+test ('1001', async () => {
+	
+	try {
+	
+		var db = await pool.toSet (job, 'db')
+
+		const a1000 = await db.getArray ('SELECT * FROM generate_series (?::int, ?) id', [1, 1000])
+		
+		expect (a1000).toHaveLength (1000)
+
+		const a1001 = await db.getArray ('SELECT * FROM generate_series (?::int, ?) id', [1, 1001], {maxRows: 2000})
+
+		expect (a1001).toHaveLength (1001)
+
+		await db.getArray ('SELECT * FROM generate_series (?::int, ?) id', [1, 1001])
+
+	}
+	catch (x) {
+	
+		expect (x).toBeInstanceOf (Error)
+	
 	}
 	finally {
 
