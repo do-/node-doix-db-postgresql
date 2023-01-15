@@ -1,9 +1,5 @@
-const EventEmitter = require ('events')
+const MockJob = require ('./lib/MockJob.js'), job = new MockJob ()
 const {DbClientPg, DbPoolPg} = require ('..')
-
-const job = new EventEmitter ()
-job.uuid = '00000000-0000-0000-0000-000000000000'
-job.logger = {log: ({message, level}) => {if (false) console.log (level + ' ' + message)}}
 
 const pool = new DbPoolPg ({
 	db: {

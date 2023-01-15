@@ -3,6 +3,7 @@
   "version": "0.0.9",
   "description": "PostgreSQL support for doix",
   "main": "index.js",
+  "files": ["/lib", "/badges"],
   "scripts": {
     "test": "jest",
     "test-ci": "jest --ci --coverage"
@@ -43,7 +44,9 @@
     ],
     "verbose": false,
     "testPathIgnorePatterns": [
-      "/node_modules/"
+      "/node_modules/",
+      "/__tests__/data",
+      "/__tests__/lib"
     ]
   }
 }
