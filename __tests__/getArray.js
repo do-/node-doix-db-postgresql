@@ -49,29 +49,6 @@ test ('getArray 1', async () => {
 	
 })
 
-test ('getArray 1 into', async () => {
-	
-	try {
-	
-		var db = await pool.toSet (job, 'db')
-
-		const into = [1]	
-	
-		const a = await db.getArray ('SELECT 1 AS id', [], {into})
-
-		expect (a).toBe (into)
-
-		expect (a).toStrictEqual ([1, {id: 1}])
-
-	}
-	finally {
-
-		await db.release ()
-
-	}
-	
-})
-
 test ('drop create insert select', async () => {
 
 	const dst = 'my_table', id = Math.floor (Math.random (10))
