@@ -1,6 +1,6 @@
 {
   "name": "doix-db-postgresql",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "PostgreSQL support for doix",
   "main": "index.js",
   "scripts": {
@@ -24,6 +24,7 @@
   "dependencies": {
     "only": "^0.0.2",
     "pg": "^8.8.0",
+    "pg-cursor": "^2.7.4",
     "pg-query-stream": "^4.2.4"
   },
   "devDependencies": {
