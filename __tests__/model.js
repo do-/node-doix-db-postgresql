@@ -25,22 +25,20 @@ afterAll(async () => {
 test ('model', async () => {
 
 	try {
-	
+
 		var db = await pool.toSet (job, 'db')
-		
+
 		const model = new DbModel ({dir, db: pool})
 
-		expect ([...db.lang.genDropViews (model.map)]).toHaveLength (0)
-		
+		expect ([...db.lang.genDDL (model)]).toHaveLength (0)
+
 		model.loadModules ()
 
-		for (const [sql] of db.lang.genDropViews (model.map)) {
+		for (const [sql] of db.lang.genDDL (model)) await db.do (sql)
+		
+		const a = await db.getArray ('SELECT * FROM vw_1')
 
-			expect (sql).toBe ('DROP VIEW IF EXISTS "vw_1","vw_2" CASCADE')
-
-			await db.do (sql)
-
-		}
+		expect (a).toStrictEqual ([{id: 1}])
 
 	}
 	finally {
