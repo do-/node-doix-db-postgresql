@@ -48,7 +48,7 @@ test ('getArray 1', async () => {
 
 		expect (a).toStrictEqual ([{id: 1}])
 
-		expect (a[Symbol.for ('columns')] [0].type).toBe ('int4')
+		expect (a[Symbol.for ('columns')] [0].type).toBe ('INT4')
 
 	}
 	finally {
