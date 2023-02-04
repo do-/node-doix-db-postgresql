@@ -4,6 +4,7 @@ module.exports = {
 
     columns: {
         id       : 'int    // PK',
+        label    : 'text   // Human readable',
     },
     
     pk: 'id',
