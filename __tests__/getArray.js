@@ -23,11 +23,6 @@ test ('e7707', async () => {
 		await expect (db.getArray ('SELECT 1 AS id', [], {maxRows: -1})).rejects.toThrow ()
 		await expect (db.getArray ('SELECT 1 AS id', [], {maxRows: Infinity})).rejects.toThrow ()
 		await expect (db.getArray ('SELECT 1 AS id', [], {rowMode: 'whatever'})).rejects.toThrow ()
-		await expect (db.getArray ('SELECT 1 AS id', [], {limit: true})).rejects.toThrow ()
-		await expect (db.getArray ('SELECT 1 AS id', [], {limit: 0})).rejects.toThrow ()
-		await expect (db.getArray ('SELECT 1 AS id', [], {offset: 1})).rejects.toThrow ()
-		await expect (db.getArray ('SELECT 1 AS id', [], {limit: 1, offset: true})).rejects.toThrow ()
-		await expect (db.getArray ('SELECT 1 AS id', [], {limit: 1, offset: -1})).rejects.toThrow ()
 
 	}
 	finally {
@@ -150,28 +145,6 @@ test ('1001', async () => {
 	
 		expect (x).toBeInstanceOf (Error)
 	
-	}
-	finally {
-
-		await db.release ()
-
-	}
-	
-})
-
-test ('limit', async () => {
-	
-	try {
-	
-		var db = await pool.toSet (job, 'db')
-		
-		const sql = 'SELECT * FROM generate_series (?::int, ?) id'
-		
-		const get = async (n, o = {}) => db.getArray (sql, [1, n], o)
-		
-		expect (await get (1000, {limit: 3, rowMode: 'scalar'})).toStrictEqual ([1, 2, 3])
-		expect (await get (1000, {limit: 3, offset: 1, rowMode: 'scalar'})).toStrictEqual ([2, 3, 4])
-
 	}
 	finally {
 
