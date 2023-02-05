@@ -1,6 +1,6 @@
 {
   "name": "doix-db-postgresql",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "description": "PostgreSQL support for doix",
   "main": "index.js",
   "files": ["/lib", "/badges"],
