@@ -40,6 +40,21 @@ test ('model', async () => {
 
 		expect (a).toStrictEqual ([{id: 1}])
 
+		const q = model.createQuery ([
+			['vw_1', {
+				columns: ['id'],
+				filters: [['id', '=', 1]],
+			}],
+		])		
+
+		const id = await db.getScalar (q)
+
+		expect (id).toBe (1)
+
+		const is = await db.getStream (q)
+		
+		for await (const r of is) expect (r).toStrictEqual ({id: 1})
+
 	}
 	finally {
 
