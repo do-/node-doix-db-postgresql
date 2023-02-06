@@ -54,6 +54,21 @@ test ('model', async () => {
 		const is = await db.getStream (q)
 		
 		for await (const r of is) expect (r).toStrictEqual ({id: 1})
+		
+		{
+
+			const qc = model.createQuery ([['vw_1']], {
+				order: ['id'],
+				limit: 1,
+				offset: 0,
+			})		
+
+			const l = await db.getArray (qc)
+
+			expect (l).toStrictEqual ([{id: 1}])
+			expect (l [Symbol.for ('count')]).toBe (1)
+		
+		}
 
 	}
 	finally {
