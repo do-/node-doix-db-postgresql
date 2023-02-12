@@ -67,6 +67,7 @@ test ('model', async () => {
 
 			expect (l).toStrictEqual ([{id: 1}])
 			expect (l [Symbol.for ('count')]).toBe (1)
+			expect (l [Symbol.for ('query')]).toBe (qc)
 		
 		}
 
