@@ -26,9 +26,9 @@ test ('model', async () => {
 
 	try {
 
-		var db = await pool.toSet (job, 'db')
-
 		const model = new DbModel ({dir, db: pool})
+
+		var db = await pool.toSet (job, 'db')
 
 		expect ([...db.lang.genDDL (model)]).toHaveLength (0)
 
@@ -36,9 +36,29 @@ test ('model', async () => {
 
 		for (const [sql] of db.lang.genDDL (model)) await db.do (sql)
 		
-		const a = await db.getArray ('SELECT * FROM vw_1')
+		{
 
-		expect (a).toStrictEqual ([{id: 1}])
+			const a = await db.getArray ('SELECT * FROM vw_1')
+
+			expect (a).toStrictEqual ([{id: 1}])
+
+		}
+
+		{
+
+			const o = await db.getObject ('vw_1', [1])
+
+			expect (o).toStrictEqual ({id: 1})
+
+		}
+
+		{
+
+			const o = await db.getObject ('vw_1', [2])
+
+			expect (o).toStrictEqual ({})
+
+		}
 
 		const q = model.createQuery ([
 			['vw_1', {
