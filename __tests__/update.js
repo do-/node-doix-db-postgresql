@@ -34,7 +34,8 @@ test ('basic', async () => {
 		
 		await db.do ('DROP TABLE IF EXISTS tb_2')
 		await db.do ('CREATE TABLE tb_2 (id int, label text)')
-		await db.do ('INSERT INTO tb_2 (id, label) VALUES (?, ?)', [1, 'user'])
+
+		await db.insert ('tb_2', {id: 1, label: 'user'})
 		expect (await db.getArray ('SELECT * FROM tb_2')).toStrictEqual ([{id: 1, label: 'user'}])
 
 		await db.update ('tb_2', {id: 1, label: 'admin'})
