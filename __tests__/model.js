@@ -49,6 +49,13 @@ test ('model', async () => {
 			const o = await db.getObject ('vw_1', [1])
 
 			expect (o).toStrictEqual ({id: 1})
+		}
+		
+		{
+
+			const o = await db.getObject ('vw_1', 1)
+
+			expect (o).toStrictEqual ({id: 1})
 
 		}
 
