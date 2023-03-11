@@ -33,7 +33,7 @@ test ('basic', async () => {
 		m.loadModules ()
 		
 		await db.do ('DROP TABLE IF EXISTS tb_2')
-		await db.do ('CREATE TABLE tb_2 (id int, label text)')
+		await db.do ('CREATE TABLE tb_2 (id int PRIMARY KEY, label text)')
 
 		await db.insert ('tb_2', {id: 1, label: 'user'})
 		expect (await db.getArray ('SELECT * FROM tb_2')).toStrictEqual ([{id: 1, label: 'user'}])
@@ -43,6 +43,9 @@ test ('basic', async () => {
 
 		await db.update ('tb_2', {id: 1})
 		expect (await db.getArray ('SELECT * FROM tb_2')).toStrictEqual ([{id: 1, label: 'admin'}])
+
+		await db.upsert ('tb_2', {id: 1, label: 'user'}, {key: ['id']})
+		expect (await db.getArray ('SELECT * FROM tb_2')).toStrictEqual ([{id: 1, label: 'user'}])
 
 	}
 	finally {
