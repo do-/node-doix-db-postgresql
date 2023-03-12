@@ -2,6 +2,7 @@ const Path = require ('path')
 const {DbModel} = require ('doix-db')
 const MockJob = require ('./lib/MockJob.js'), job = new MockJob ()
 const {DbClientPg, DbPoolPg} = require ('..')
+const {Readable} = require ('stream')
 
 const pool = new DbPoolPg ({
 	db: {
@@ -47,7 +48,43 @@ test ('basic', async () => {
 		await db.upsert ('tb_2', {id: 1, label: 'user'}, {key: ['id']})
 		expect (await db.getArray ('SELECT * FROM tb_2')).toStrictEqual ([{id: 1, label: 'user'}])
 
+		await db.do ('TRUNCATE tb_2')
+		
+		await expect (db.putStream ('tb_-1')).rejects.toThrow ()
+
+		{
+		
+			const os = await db.putStream ('tb_2', ['id', 'label'])
+			await new Promise ((ok, fail) => {
+				os.on ('error', fail)
+				os.on ('finish', ok)
+				Readable.from ([
+					'1\tadmin\n',
+					'2\tuser\n',
+				]).pipe (os)
+			})
+
+			expect (await db.getArray ('SELECT * FROM tb_2 ORDER BY id')).toStrictEqual ([
+				{id: 1, label: 'admin'},
+				{id: 2, label: 'user'},
+			])
+
+		}
+		
+		{
+
+			const os = await db.putStream ('tb_2', ['id', 'label'])
+
+			await expect (new Promise ((ok, fail) => {
+				os.on ('error', fail)
+				os.on ('finish', ok)
+				Readable.from (['zzz']).pipe (os)
+			})).rejects.toThrow ()
+
+		}
+
 	}
+	
 	finally {
 
 		await db.release ()
