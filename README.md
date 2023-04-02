@@ -2,4 +2,4 @@
 ![Jest coverage](./badges/coverage-jest%20coverage.svg)
 
 # doix-db-postgresql
-PostgreSQL support for doix
+[PostgreSQL DBMS](https://www.postgresql.org/) support for doix
