@@ -14,6 +14,38 @@ afterAll(async () => {
 
 })
 
+test ('error', async () => {
+
+	let xxx
+	
+	try {
+	
+		var db = await pool.toSet (job, 'db'), backup = db.lang.genSelectColumnsSql
+		
+		db.lang.genSelectColumnsSql = () => 'noSQL'
+
+		const a = [], ts = await db.getStreamOfExistingTables ()
+
+		for await (const t of ts) a.push (t)
+
+	}
+	catch (x) {
+	
+		xxx = x
+
+	}
+	finally {
+	
+		db.lang.genSelectColumnsSql = backup
+
+		await db.release ()
+
+	}
+	
+	expect (xxx).toBeDefined ()
+	
+})
+
 test ('basic', async () => {
 
 	const dbName = 'doix_test_db_2'
