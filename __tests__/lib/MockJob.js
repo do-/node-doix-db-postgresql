@@ -12,7 +12,8 @@ module.exports = class extends EventEmitter {
 		
 			log: ({message, level}) => {
 			
-				if (false) console.log (level + ' ' + message)
+				//if (false) 
+				console.log (level + ' ' + message)
 				
 			}
 		
