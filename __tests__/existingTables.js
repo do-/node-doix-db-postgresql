@@ -70,9 +70,8 @@ test ('basic', async () => {
 
 		expect (t.pk).toStrictEqual (['id'])
 		expect (Object.keys (t.columns).sort ()).toStrictEqual (['id', 'label', 'salary'])
-		expect (t.columns.label.type).toBe ('text')
-		expect (t.columns.salary.size).toBe (10)
-		expect (t.columns.salary.scale).toBe (2)
+		expect (t.columns.label.typeDim).toBe ('TEXT')
+		expect (t.columns.salary.typeDim).toBe ('NUMERIC(10,2)')
 
 		await db.do (`DROP SCHEMA ${dbName} CASCADE`)
 
