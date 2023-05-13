@@ -28,7 +28,7 @@ test ('no model', async () => {
 
 		var db = await pool.toSet (job, 'db')
 
-		const o = await db.getObject ('SELECT * FROM vw_1 WHERE id = ?', [1])
+		const o = await db.getObject ('SELECT ?', [1])
 	
 	}
 	finally {

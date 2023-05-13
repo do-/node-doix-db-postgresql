@@ -26,15 +26,26 @@ test ('model', async () => {
 
 	try {
 
+		const dbName = 'doix_test_db_3'
+
 		const model = new DbModel ({dir, db: pool})
 
 		var db = await pool.toSet (job, 'db')
 
-		expect ([...db.lang.genDDL (model)]).toHaveLength (0)
+		await db.do (`DROP SCHEMA IF EXISTS ${dbName} CASCADE`)
+		await db.do (`CREATE SCHEMA ${dbName}`)
+		await db.do (`SET SCHEMA '${dbName}'`)
+
+//		expect ([...db.lang.genDDL ()]).toHaveLength (0)
 
 		model.loadModules ()
 
-		for (const [sql] of db.lang.genDDL (model)) await db.do (sql)
+		const plan = db.createMigrationPlan ()
+
+		await plan.loadStructure ()
+		plan.inspectStructure ()
+
+		for (const [sql] of plan.genDDL ()) await db.do (sql)
 		
 		{
 
@@ -97,6 +108,8 @@ test ('model', async () => {
 			expect (l [Symbol.for ('query')]).toBe (qc)
 		
 		}
+
+		await db.do (`DROP SCHEMA ${dbName} CASCADE`)
 
 	}
 	finally {
