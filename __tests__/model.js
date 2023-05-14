@@ -39,13 +39,37 @@ test ('model', async () => {
 //		expect ([...db.lang.genDDL ()]).toHaveLength (0)
 
 		model.loadModules ()
-
+		
 		const plan = db.createMigrationPlan ()
 
 		await plan.loadStructure ()
 		plan.inspectStructure ()
 
 		for (const [sql] of plan.genDDL ()) await db.do (sql)
+
+		{
+		
+			await db.do ('INSERT INTO tb_1 (id) VALUES (?)', [1])
+			
+			{
+
+				const a = await db.getArray ('SELECT * FROM tb_1')
+
+				expect (a).toStrictEqual ([{id: 1, label: 'on'}])
+			
+			}
+
+			await db.do ('INSERT INTO tb_1 (id, label) VALUES (?, ?) ON CONFLICT (id) DO UPDATE SET label = EXCLUDED.label', [1, 'one'])
+
+			{
+
+				const a = await db.getArray ('SELECT * FROM tb_1')
+
+				expect (a).toStrictEqual ([{id: 1, label: 'one'}])
+			
+			}
+
+		}
 		
 		{
 
