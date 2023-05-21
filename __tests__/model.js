@@ -77,6 +77,8 @@ test ('model', async () => {
 
 			expect ([...plan.toDo.keys ()]).toStrictEqual (['recreate'])
 
+			expect (plan.asIs.get ('tb_1').toDo.size).toStrictEqual (0)
+
 		}
 
 		{
