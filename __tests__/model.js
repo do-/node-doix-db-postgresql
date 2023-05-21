@@ -108,6 +108,42 @@ test ('model', async () => {
 		}
 		
 		{
+		
+			await db.do (`ALTER TABLE tb_1 ALTER amount DROP NOT NULL, ALTER amount SET DEFAULT 1, ALTER label SET NOT NULL, ALTER id SET DEFAULT 0`)
+
+			await db.do ('INSERT INTO tb_1 (id, label) VALUES (?, ?)', [2, 'two'])
+
+			{
+
+				const a = await db.getArray ('SELECT * FROM tb_1')
+
+				expect (a).toStrictEqual ([
+					{id: 1, label: 'one', amount: '0.00'},
+					{id: 2, label: 'two', amount: '1.00'}
+				])
+			
+			}
+
+			await db.do ('UPDATE tb_1 SET amount = NULL WHERE id = ?', [2])
+
+			const plan = db.createMigrationPlan (); await plan.loadStructure (); plan.inspectStructure ()
+
+			for (const [sql, params] of plan.genDDL ()) await db.do (sql, params)
+
+			{
+
+				const a = await db.getArray ('SELECT * FROM tb_1')
+
+				expect (a).toStrictEqual ([
+					{id: 1, label: 'one', amount: '0.00'},
+					{id: 2, label: 'two', amount: '0.00'}
+				])
+			
+			}
+
+		}
+
+		{
 
 			const a = await db.getArray ('SELECT * FROM vw_1')
 

@@ -4,9 +4,11 @@ test ('error', () => {
 
 	const lang = new DbLangPg ()
 
-	expect (() => lang.genAlter (0, 0)).toThrow ()	
+	expect (() => [...lang.genAlter (0, 0)]).toThrow ()	
 
 	expect (() => [...lang.genDDL ()]).toThrow ()	
+
+	expect (lang.genColumnDefault ({default: 'NULL'})).toBe ('NULL')	
 
 })
 
