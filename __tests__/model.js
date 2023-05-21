@@ -109,7 +109,7 @@ test ('model', async () => {
 		
 		{
 		
-			await db.do (`ALTER TABLE tb_1 ALTER amount DROP NOT NULL, ALTER amount SET DEFAULT 1, ALTER label SET NOT NULL, ALTER id SET DEFAULT 0`)
+			await db.do (`ALTER TABLE tb_1 ALTER amount DROP NOT NULL, ALTER amount SET DEFAULT 1, ALTER amount TYPE DECIMAL(5,1), ALTER label SET NOT NULL, ALTER id SET DEFAULT 0`)
 
 			await db.do ('INSERT INTO tb_1 (id, label) VALUES (?, ?)', [2, 'two'])
 
@@ -118,8 +118,8 @@ test ('model', async () => {
 				const a = await db.getArray ('SELECT * FROM tb_1')
 
 				expect (a).toStrictEqual ([
-					{id: 1, label: 'one', amount: '0.00'},
-					{id: 2, label: 'two', amount: '1.00'}
+					{id: 1, label: 'one', amount: '0.0'},
+					{id: 2, label: 'two', amount: '1.0'}
 				])
 			
 			}
