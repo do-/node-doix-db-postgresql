@@ -48,7 +48,7 @@ test ('op', async () => {
 			}],
 		], {order: ['label']})
 
-		expect (q.toParamsSql ()).toStrictEqual ([1, '.', '.', '.', '.', '%', '%', '%', '%', 'SELECT "tb_1"."id" AS "id","tb_1"."label" AS "label" FROM "tb_1" AS "tb_1" WHERE "tb_1"."id" = ? AND "tb_1"."label" ~ ? AND "tb_1"."label" ~* ? AND "tb_1"."label" !~ ? AND "tb_1"."label" !~* ? AND "tb_1"."label" ILIKE ? AND "tb_1"."label" NOT ILIKE ? AND "tb_1"."label" SIMILAR TO ? AND "tb_1"."label" NOT SIMILAR TO ? ORDER BY "tb_1"."label"'])
+		expect (q.toParamsSql ()).toStrictEqual ([1, '.', '.', '.', '.', '%', '%', '%', '%', 'SELECT "tb_1"."id" AS "id","tb_1"."label" AS "label","tb_1"."amount" AS "amount" FROM "tb_1" AS "tb_1" WHERE "tb_1"."id" = ? AND "tb_1"."label" ~ ? AND "tb_1"."label" ~* ? AND "tb_1"."label" !~ ? AND "tb_1"."label" !~* ? AND "tb_1"."label" ILIKE ? AND "tb_1"."label" NOT ILIKE ? AND "tb_1"."label" SIMILAR TO ? AND "tb_1"."label" NOT SIMILAR TO ? ORDER BY "tb_1"."label"'])
 
 	}
 	finally {
@@ -73,7 +73,7 @@ test ('limit', async () => {
 			['tb_1'],
 		], {order: ['label'], limit: 5, offset: 10})
 
-		expect (q.toParamsSql ()).toStrictEqual ([5, 10, 'SELECT "tb_1"."id" AS "id","tb_1"."label" AS "label" FROM "tb_1" AS "tb_1" ORDER BY "tb_1"."label" LIMIT ? OFFSET ?'])
+		expect (q.toParamsSql ()).toStrictEqual ([5, 10, 'SELECT "tb_1"."id" AS "id","tb_1"."label" AS "label","tb_1"."amount" AS "amount" FROM "tb_1" AS "tb_1" ORDER BY "tb_1"."label" LIMIT ? OFFSET ?'])
 
 	}
 	finally {

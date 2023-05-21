@@ -4,6 +4,8 @@ test ('error', () => {
 
 	const lang = new DbLangPg ()
 
+	expect (() => lang.genAlter (0, 0)).toThrow ()	
+
 	expect (() => [...lang.genDDL ()]).toThrow ()	
 
 })

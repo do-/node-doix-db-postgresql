@@ -55,7 +55,7 @@ test ('model', async () => {
 
 				const a = await db.getArray ('SELECT * FROM tb_1')
 
-				expect (a).toStrictEqual ([{id: 1, label: 'on'}])
+				expect (a).toStrictEqual ([{id: 1, label: 'on', amount: '0.00'}])
 			
 			}
 
@@ -65,7 +65,41 @@ test ('model', async () => {
 
 				const a = await db.getArray ('SELECT * FROM tb_1')
 
+				expect (a).toStrictEqual ([{id: 1, label: 'one', amount: '0.00'}])
+			
+			}
+
+		}
+		
+		{
+
+			const plan = db.createMigrationPlan (); await plan.loadStructure (); plan.inspectStructure ()
+
+			expect ([...plan.toDo.keys ()]).toStrictEqual (['recreate'])
+
+		}
+
+		{
+		
+			await db.do (`ALTER TABLE tb_1 DROP COLUMN amount CASCADE`)
+
+			const plan = db.createMigrationPlan (); await plan.loadStructure (); plan.inspectStructure ()
+
+			{
+
+				const a = await db.getArray ('SELECT * FROM tb_1')
+
 				expect (a).toStrictEqual ([{id: 1, label: 'one'}])
+			
+			}
+
+			for (const [sql] of plan.genDDL ()) await db.do (sql)
+
+			{
+
+				const a = await db.getArray ('SELECT * FROM tb_1')
+
+				expect (a).toStrictEqual ([{id: 1, label: 'one', amount: '0.00'}])
 			
 			}
 
