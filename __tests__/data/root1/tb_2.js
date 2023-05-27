@@ -3,7 +3,7 @@ module.exports = {
     label: 'Table 2',
 
     columns: {
-        id       : 'int    // PK',
+        id       : '(vw_1) // PK',
         label    : 'text   // Human readable',
     },
     

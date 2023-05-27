@@ -52,6 +52,23 @@ test ('model', async () => {
 			await db.do ('INSERT INTO tb_1 (id) VALUES (?)', [1])
 			
 			{
+				
+				const REF = Math.floor (100 * Math.random ())
+			
+				await expect (db.do ('INSERT INTO tb_3 (id) VALUES (?)', [REF])).rejects.toThrow ()
+				await db.do ('INSERT INTO tb_2 (id) VALUES (?)', [REF])
+				await db.do ('INSERT INTO tb_3 (id) VALUES (?)', [REF])
+
+				const c0 = await db.getScalar ('SELECT COUNT(*) FROM tb_3')
+				expect (parseInt (c0)).toBe (1)
+
+				await db.do ('DELETE FROM tb_2 WHERE id = ?', [REF])
+				const c1 = await db.getScalar ('SELECT COUNT(*) FROM tb_3')
+				expect (parseInt (c1)).toBe (0)
+
+			}
+			
+			{
 
 				const a = await db.getArray ('SELECT * FROM tb_1')
 
