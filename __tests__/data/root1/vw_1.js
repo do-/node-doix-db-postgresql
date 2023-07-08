@@ -7,7 +7,9 @@ module.exports = {
     },
     
     pk: 'id',
+      
+	specification: '(id)',
 
-    sql: 'SELECT 1 id',
+    sql: 'SELECT 1',
 
 }
