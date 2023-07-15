@@ -8,6 +8,8 @@ module.exports = {
     
     pk: 'id',
       
+//  options: 'RECURSIVE',
+
 	specification: '(id)',
 
     sql: 'SELECT 1',

@@ -72,7 +72,7 @@ test ('model', async () => {
 
 				const a = await db.getArray ('SELECT * FROM tb_1')
 
-				expect (a).toStrictEqual ([{id: 1, label: 'on', amount: '0.00'}])
+				expect (a).toStrictEqual ([{id: 1, label: 'on', amount: '0.00', cnt: 1}])
 			
 			}
 
@@ -82,7 +82,7 @@ test ('model', async () => {
 
 				const a = await db.getArray ('SELECT * FROM tb_1')
 
-				expect (a).toStrictEqual ([{id: 1, label: 'one', amount: '0.00'}])
+				expect (a).toStrictEqual ([{id: 1, label: 'one', amount: '0.00', cnt: 2}])
 			
 			}
 
@@ -108,7 +108,7 @@ test ('model', async () => {
 
 				const a = await db.getArray ('SELECT * FROM tb_1')
 
-				expect (a).toStrictEqual ([{id: 1, label: 'one'}])
+				expect (a).toStrictEqual ([{id: 1, label: 'one', cnt: 2}])
 			
 			}
 
@@ -118,7 +118,7 @@ test ('model', async () => {
 
 				const a = await db.getArray ('SELECT * FROM tb_1')
 
-				expect (a).toStrictEqual ([{id: 1, label: 'one', amount: '0.00'}])
+				expect (a).toStrictEqual ([{id: 1, label: 'one', amount: '0.00', cnt: 2}])
 			
 			}
 
@@ -135,8 +135,8 @@ test ('model', async () => {
 				const a = await db.getArray ('SELECT * FROM tb_1')
 
 				expect (a).toStrictEqual ([
-					{id: 1, label: 'one', amount: '0.0'},
-					{id: 2, label: 'two', amount: '1.0'}
+					{id: 1, label: 'one', amount: '0.0', cnt: 2},
+					{id: 2, label: 'two', amount: '1.0', cnt: 1}
 				])
 			
 			}
@@ -152,8 +152,8 @@ test ('model', async () => {
 				const a = await db.getArray ('SELECT * FROM tb_1')
 
 				expect (a).toStrictEqual ([
-					{id: 1, label: 'one', amount: '0.00'},
-					{id: 2, label: 'two', amount: '0.00'}
+					{id: 1, label: 'one', amount: '0.00', cnt: 2},
+					{id: 2, label: 'two', amount: '0.00', cnt: 2}
 				])
 			
 			}
@@ -177,7 +177,7 @@ test ('model', async () => {
 		
 		{
 
-			const o = await db.getObject ('vw_1', 1)
+			const o = await db.getObject ('vw_1', [1])
 
 			expect (o).toStrictEqual ({id: 1})
 
