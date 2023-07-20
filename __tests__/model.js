@@ -49,7 +49,7 @@ test ('model', async () => {
 
 		{
 		
-			await db.do ('INSERT INTO tb_1 (id) VALUES (?)', [1])
+			await db.do ('INSERT INTO tb_1 (id) VALUES (f_1 (0))')
 			
 			{
 				
