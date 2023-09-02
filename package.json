@@ -1,6 +1,6 @@
 {
   "name": "doix-db-postgresql",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "PostgreSQL support for doix",
   "main": "index.js",
   "files": [
@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/do-/node-doix-db-postgresql#readme",
   "peerDependencies": {
-    "doix-db": "^1.0.4"
+    "doix-db": "^1.0.5"
   },
   "dependencies": {
     "only": "^0.0.2",

@@ -10,6 +10,14 @@ module.exports = {
     },
 
     pk: 'id',
+    
+    keys: {
+        amount   : 'amount',
+        label   : {
+        	parts:   ['label'],
+        	options: ['UNIQUE', 'WHERE cnt > 0'],
+        },
+    },
 
     triggers: [
 
