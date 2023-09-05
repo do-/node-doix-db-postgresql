@@ -96,6 +96,18 @@ test ('model', async () => {
 
 			expect (plan.asIs.get ('tb_1').toDo.size).toStrictEqual (0)
 
+			plan.toBe.get ('tb_1').keys.amount = null
+
+			let drops = 0; for (const [sql, params] of plan.genDDL ()) {
+
+				if (/^DROP INDEX/.test (sql)) drops ++
+
+				await db.do (sql, params)
+
+			} 
+
+			expect (drops).toBe (1)
+
 		}
 
 		{
