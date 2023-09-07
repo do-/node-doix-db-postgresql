@@ -45,7 +45,7 @@ test ('model', async () => {
 		await plan.loadStructure ()
 		plan.inspectStructure ()
 
-		for (const [sql] of plan.genDDL ()) await db.do (sql)
+		for (const [sql, params] of plan.genDDL ()) await db.do (sql, params)
 
 		{
 		
@@ -70,9 +70,12 @@ test ('model', async () => {
 			
 			{
 
-				const a = await db.getArray ('SELECT * FROM tb_1')
+				const a = await db.getArray ('SELECT * FROM tb_1 ORDER BY id')
 
-				expect (a).toStrictEqual ([{id: 1, label: 'on', amount: '0.00', cnt: 1}])
+				expect (a).toStrictEqual ([
+					{id: 0, label: 'zero', amount: '0.00', cnt: 1},
+					{id: 1, label: 'on', amount: '0.00', cnt: 1},
+				])
 			
 			}
 
@@ -80,9 +83,12 @@ test ('model', async () => {
 
 			{
 
-				const a = await db.getArray ('SELECT * FROM tb_1')
+				const a = await db.getArray ('SELECT * FROM tb_1 ORDER BY id')
 
-				expect (a).toStrictEqual ([{id: 1, label: 'one', amount: '0.00', cnt: 2}])
+				expect (a).toStrictEqual ([
+					{id: 0, label: 'zero', amount: '0.00', cnt: 1},
+					{id: 1, label: 'one', amount: '0.00', cnt: 2},
+				])
 			
 			}
 
@@ -118,19 +124,25 @@ test ('model', async () => {
 
 			{
 
-				const a = await db.getArray ('SELECT * FROM tb_1')
+				const a = await db.getArray ('SELECT * FROM tb_1 ORDER BY id')
 
-				expect (a).toStrictEqual ([{id: 1, label: 'one', cnt: 2}])
+				expect (a).toStrictEqual ([
+					{id: 0, label: 'zero', cnt: 2},
+					{id: 1, label: 'one', cnt: 2},
+				])
 			
 			}
 
-			for (const [sql] of plan.genDDL ()) await db.do (sql)
+			for (const [sql, params] of plan.genDDL ()) await db.do (sql, params)
 
 			{
 
-				const a = await db.getArray ('SELECT * FROM tb_1')
+				const a = await db.getArray ('SELECT * FROM tb_1 ORDER BY id')
 
-				expect (a).toStrictEqual ([{id: 1, label: 'one', amount: '0.00', cnt: 2}])
+				expect (a).toStrictEqual ([
+					{id: 0, label: 'zero', amount: '0.00', cnt: 2},
+					{id: 1, label: 'one', amount: '0.00', cnt: 2},
+				])
 			
 			}
 
@@ -144,9 +156,10 @@ test ('model', async () => {
 
 			{
 
-				const a = await db.getArray ('SELECT * FROM tb_1')
+				const a = await db.getArray ('SELECT * FROM tb_1 ORDER BY id')
 
 				expect (a).toStrictEqual ([
+					{id: 0, label: 'zero', amount: '0.0', cnt: 2},
 					{id: 1, label: 'one', amount: '0.0', cnt: 2},
 					{id: 2, label: 'two', amount: '1.0', cnt: 1}
 				])
@@ -161,9 +174,10 @@ test ('model', async () => {
 
 			{
 
-				const a = await db.getArray ('SELECT * FROM tb_1')
+				const a = await db.getArray ('SELECT * FROM tb_1 ORDER BY id')
 
 				expect (a).toStrictEqual ([
+					{id: 0, label: 'zero', amount: '0.00', cnt: 2},
 					{id: 1, label: 'one', amount: '0.00', cnt: 2},
 					{id: 2, label: 'two', amount: '0.00', cnt: 2}
 				])
@@ -174,7 +188,7 @@ test ('model', async () => {
 
 		{
 
-			const a = await db.getArray ('SELECT * FROM vw_1')
+			const a = await db.getArray ('SELECT * FROM vw_1 ORDER BY id')
 
 			expect (a).toStrictEqual ([{id: 1}])
 

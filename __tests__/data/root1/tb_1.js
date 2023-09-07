@@ -10,6 +10,10 @@ module.exports = {
     },
 
     pk: 'id',
+
+    data: [
+        {id: 0, label: 'zero'},
+    ],
     
     keys: {
         amount   : 'amount',
