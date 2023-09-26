@@ -1,6 +1,6 @@
 module.exports = {
 
-    label: 'Function 1',
+    comment: 'Function 1',
     
     parameters: [
     	'id int',

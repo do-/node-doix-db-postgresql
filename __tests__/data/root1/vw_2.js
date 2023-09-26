@@ -1,6 +1,6 @@
 module.exports = {
 
-    label: 'View 2',
+    comment: 'View 2',
 
     columns: {
         id       : 'int    // PK',

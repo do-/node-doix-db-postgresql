@@ -1,6 +1,6 @@
 module.exports = {
 
-    label: 'Table 2',
+    comment: 'Table 2',
 
     columns: {
         id       : '(vw_1) // PK',

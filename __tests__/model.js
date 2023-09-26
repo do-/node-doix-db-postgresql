@@ -98,9 +98,10 @@ test ('model', async () => {
 
 			const plan = db.createMigrationPlan (); await plan.loadStructure (); plan.inspectStructure ()
 
-			expect ([...plan.toDo.keys ()]).toStrictEqual (['recreate'])
-
-			expect (plan.asIs.get ('tb_1').toDo.size).toStrictEqual (0)
+			expect ([...plan.toDo.keys ()].sort ()).toStrictEqual ([
+				'comment', 
+				'recreate'
+			])
 
 			plan.toBe.get ('tb_1').keys.amount = null
 
