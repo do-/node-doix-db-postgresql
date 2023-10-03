@@ -1,5 +1,5 @@
 const MockJob = require ('./lib/MockJob.js'), job = new MockJob ()
-const {DbClientPg, DbPoolPg} = require ('..')
+const {DbPoolPg} = require ('..')
 
 const pool = new DbPoolPg ({
 	db: {

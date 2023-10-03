@@ -1,8 +1,7 @@
 const Path = require ('path')
 const {DbModel} = require ('doix-db')
 const MockJob = require ('./lib/MockJob.js'), job = new MockJob ()
-const {DbClientPg, DbPoolPg} = require ('..')
-const {Readable} = require ('stream')
+const {DbPoolPg} = require ('..')
 
 const pool = new DbPoolPg ({
 	db: {
@@ -10,12 +9,7 @@ const pool = new DbPoolPg ({
 	},
 })
 
-const r = () => ['root1'].map (i => Path.join (__dirname, 'data', i))
-
-const dir = {
-	root: r (),
-	live: false,
-}
+const src = Path.join (__dirname, 'data', 'root1')
 
 afterAll(async () => {
 
@@ -29,7 +23,7 @@ test ('basic', async () => {
 
 		var db = await pool.toSet (job, 'db')
 
-		const m = new DbModel ({dir, db: pool})
+		const m = new DbModel ({src, db: pool})
 
 		m.loadModules ()
 		

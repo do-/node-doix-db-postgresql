@@ -1,20 +1,13 @@
 const Path = require ('path')
 const {DbModel} = require ('doix-db')
 const MockJob = require ('./lib/MockJob.js'), job = new MockJob ()
-const {DbClientPg, DbPoolPg} = require ('..')
+const {DbPoolPg} = require ('..')
 
 const pool = new DbPoolPg ({
 	db: {
 		connectionString: process.env.CONNECTION_STRING,
 	},
 })
-
-const r = () => ['root1'].map (i => Path.join (__dirname, 'data', i))
-
-const dir = {
-	root: r (),
-	live: false,
-}
 
 afterAll(async () => {
 
@@ -26,15 +19,21 @@ test ('model', async () => {
 
 	try {
 
-		const dbName = 'doix_test_db_3'
+		const schemaName = 'doix_test_db_3'
 
-		const model = new DbModel ({dir, db: pool})
+		const model = new DbModel ({
+			src: {
+				schemaName,
+				root: Path.join (__dirname, 'data', 'root1')
+			},
+			db: pool
+		})
 
 		var db = await pool.toSet (job, 'db')
 
-		await db.do (`DROP SCHEMA IF EXISTS ${dbName} CASCADE`)
-		await db.do (`CREATE SCHEMA ${dbName}`)
-		await db.do (`SET SCHEMA '${dbName}'`)
+		await db.do (`DROP SCHEMA IF EXISTS ${schemaName} CASCADE`)
+		await db.do (`CREATE SCHEMA ${schemaName}`)
+		await db.do (`SET SCHEMA '${schemaName}'`)
 
 //		expect ([...db.lang.genDDL ()]).toHaveLength (0)
 
@@ -249,7 +248,7 @@ test ('model', async () => {
 		
 		}
 
-		await db.do (`DROP SCHEMA ${dbName} CASCADE`)
+		await db.do (`DROP SCHEMA ${schemaName} CASCADE`)
 
 	}
 	finally {
