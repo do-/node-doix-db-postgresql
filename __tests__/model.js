@@ -32,8 +32,7 @@ test ('model', async () => {
 		var db = await pool.toSet (job, 'db')
 
 		await db.do (`DROP SCHEMA IF EXISTS ${schemaName} CASCADE`)
-		await db.do (`CREATE SCHEMA ${schemaName}`)
-		await db.do (`SET SCHEMA '${schemaName}'`)
+//		await db.do (`CREATE SCHEMA ${schemaName}`)
 
 //		expect ([...db.lang.genDDL ()]).toHaveLength (0)
 
@@ -45,6 +44,8 @@ test ('model', async () => {
 		plan.inspectStructure ()
 
 		for (const [sql, params] of plan.genDDL ()) await db.do (sql, params)
+
+		await db.do (`SET SCHEMA '${schemaName}'`)
 
 		{
 		

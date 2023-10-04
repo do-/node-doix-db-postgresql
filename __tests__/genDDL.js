@@ -1,8 +1,16 @@
-const {DbLangPg} = require ('..')
+const {DbModel} = require ('doix-db')
+const {DbPoolPg} = require ('..')
+
+const pool = new DbPoolPg ({
+	db: {
+		connectionString: process.env.CONNECTION_STRING,
+	},
+})
+
 
 test ('error', () => {
 
-	const lang = new DbLangPg ()
+	const model = new DbModel ({db: pool}), {lang} = model
 
 	expect (() => [...lang.genAlter (0, 0)]).toThrow ()	
 
@@ -14,7 +22,7 @@ test ('error', () => {
 
 test ('empty', () => {
 
-	const lang = new DbLangPg ()
+	const model = new DbModel ({db: pool}), {lang} = model
 	
 	lang.migrationPlan = {toDo: new Map ()}
 

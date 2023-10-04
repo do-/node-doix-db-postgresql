@@ -1,5 +1,7 @@
 const MockJob = require ('./lib/MockJob.js'), job = new MockJob ()
 const {DbPoolPg} = require ('..')
+const {DbModel} = require ('doix-db')
+const DbTableXformerPg = require ('../lib/DbTableXformerPg.js')
 
 const pool = new DbPoolPg ({
 	db: {
@@ -14,12 +16,34 @@ afterAll(async () => {
 
 })
 
+test ('xform fail', () => {
+
+	const xf = new DbTableXformerPg (new DbModel ({db: pool}))
+
+	let x
+
+	const cb = (err, data) => {
+
+		if (err) return x = err
+
+		throw data
+
+	}
+
+	xf._transform ({}, null, cb)
+	
+	expect (x).toBeInstanceOf (Error)
+
+})
+
 test ('error', async () => {
 
 	let xxx
 	
 	try {
 	
+		new DbModel ({db: pool})
+
 		var db = await pool.toSet (job, 'db'), backup = db.lang.genSelectColumnsSql
 		
 		db.lang.genSelectColumnsSql = () => 'noSQL'
@@ -30,7 +54,7 @@ test ('error', async () => {
 
 	}
 	catch (x) {
-	
+
 		xxx = x
 
 	}
@@ -51,6 +75,8 @@ test ('basic', async () => {
 	const dbName = 'doix_test_db_2'
 	
 	try {
+
+		new DbModel ({db: pool, src: {schemaName: dbName}})
 	
 		var db = await pool.toSet (job, 'db')
 		
