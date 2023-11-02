@@ -19,6 +19,8 @@ module.exports = class extends EventEmitter {
 		
 		}
 
+		this.tracker = {prefix: 'DUMMY'}
+
 	}
 
 }

@@ -9,6 +9,8 @@ const pool = new DbPoolPg ({
 	},
 })
 
+pool.logger = job.logger
+
 const src = Path.join (__dirname, 'data', 'root1')
 
 afterAll(async () => {

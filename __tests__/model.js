@@ -9,6 +9,8 @@ const pool = new DbPoolPg ({
 	},
 })
 
+pool.logger = job.logger
+
 afterAll(async () => {
 
 	await pool.pool.end ()
@@ -212,7 +214,7 @@ test ('model', async () => {
 
 		{
 
-			const o = await db.getObject ('vw_1', [2])
+			const o = await db.getObject ('vw_1', [2], {notFound: {}})
 
 			expect (o).toStrictEqual ({})
 

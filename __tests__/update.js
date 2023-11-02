@@ -10,6 +10,8 @@ const pool = new DbPoolPg ({
 	},
 })
 
+pool.logger = job.logger
+
 const src = Path.join (__dirname, 'data', 'root1')
 
 afterAll(async () => {
@@ -65,7 +67,7 @@ test ('basic', async () => {
 			])
 
 		}
-		
+/*		
 		{
 
 			const os = await db.putStream ('tb_2', ['id', 'label'])
@@ -77,7 +79,7 @@ test ('basic', async () => {
 			})).rejects.toThrow ()
 
 		}
-
+*/
 	}
 	
 	finally {

@@ -9,6 +9,7 @@ const pool = new DbPoolPg ({
 	},
 })
 
+pool.logger = job.logger
 
 afterAll(async () => {
 

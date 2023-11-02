@@ -7,6 +7,8 @@ const pool = new DbPoolPg ({
 	},
 })
 
+pool.logger = job.logger
+
 afterAll(async () => {
 
 	await pool.pool.end ()
@@ -21,7 +23,7 @@ test ('e7707', async () => {
 				
 		await expect (db.do ('...')).rejects.toThrow ()
 		await expect (db.getArray ('SELECT 1 AS id', [], {maxRows: -1})).rejects.toThrow ()
-		await expect (db.getArray ('SELECT 1 AS id', [], {maxRows: Infinity})).rejects.toThrow ()
+		await expect (db.getArray ('SELECT 1 AS id', [], {maxRows: -Infinity})).rejects.toThrow ()
 		await expect (db.getArray ('SELECT 1 AS id', [], {rowMode: 'whatever'})).rejects.toThrow ()
 
 	}
@@ -36,7 +38,7 @@ test ('e7707', async () => {
 test ('getArray 1', async () => {
 	
 	try {
-	
+
 		var db = await pool.toSet (job, 'db')
 
 		const a = await db.getArray ('SELECT 1::int4 AS id')

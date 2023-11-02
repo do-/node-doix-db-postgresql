@@ -7,6 +7,8 @@ const pool = new DbPoolPg ({
 	},
 })
 
+pool.logger = job.logger
+
 afterAll(async () => {
 
 	await pool.pool.end ()
@@ -98,7 +100,7 @@ test ('default', async () => {
 	
 		var db = await pool.toSet (job, 'db')
 
-		const o = await db.getObject ('SELECT 1 id WHERE false', [])
+		const o = await db.getObject ('SELECT 1 id WHERE false', [], {notFound: {}})
 
 		expect (o).toStrictEqual ({})
 
