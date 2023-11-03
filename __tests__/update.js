@@ -46,7 +46,7 @@ test ('basic', async () => {
 		expect (await db.getArray ('SELECT * FROM tb_2')).toStrictEqual ([{id: 1, label: 'user'}])
 
 		await db.do ('TRUNCATE tb_2')
-/*		
+		
 		await expect (db.putStream ('tb_-1')).rejects.toThrow ()
 
 		{
@@ -67,7 +67,7 @@ test ('basic', async () => {
 			])
 
 		}
-		
+
 		{
 
 			const os = await db.putStream ('tb_2', ['id', 'label'])
@@ -79,7 +79,7 @@ test ('basic', async () => {
 			})).rejects.toThrow ()
 
 		}
-*/
+
 	}
 	
 	finally {
