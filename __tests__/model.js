@@ -34,9 +34,8 @@ test ('model', async () => {
 		var db = await pool.toSet (job, 'db')
 
 		await db.do (`DROP SCHEMA IF EXISTS ${schemaName} CASCADE`)
-//		await db.do (`CREATE SCHEMA ${schemaName}`)
 
-//		expect ([...db.lang.genDDL ()]).toHaveLength (0)
+		expect (model.lang.getTypeDefinition ('xls').name).toBe ('XLS') // sic
 
 		model.loadModules ()
 		

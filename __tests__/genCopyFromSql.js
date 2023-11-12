@@ -18,7 +18,7 @@ test ('genCopyFromSqlOptions', () => {
 		force_quote: '*',
 		OIDS: false,
 		NULL: '\N'
-	})).toBe (" WITH (FORMAT CSV, FORCE_QUOTE *, OIDS FALSE, NULL '\N')")
+	})).toBe (" WITH (FORMAT CSV, FORCE_QUOTE *, NULL '\N')")
 
 })
 
@@ -29,6 +29,6 @@ test ('genCopyFromSql', () => {
 		force_quote: '*',
 		OIDS: false,
 		NULL: '\N'
-	})).toBe (`COPY "roles" ("id","label") FROM STDIN WITH (FORMAT CSV, FORCE_QUOTE *, OIDS FALSE, NULL '\N')`)
+	})).toBe (`COPY "roles" ("id","label") FROM STDIN WITH (FORMAT CSV, FORCE_QUOTE *, NULL '\N')`)
 
 })

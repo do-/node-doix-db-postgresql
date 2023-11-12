@@ -22,16 +22,16 @@ afterAll(async () => {
 
 test ('basic', async () => {
 
+	const m = new DbModel ({src, db: pool})
+	m.loadModules ()
+
 	try {
 
 		var db = await pool.toSet (job, 'db')
 
-		const m = new DbModel ({src, db: pool})
-
-		m.loadModules ()
-		
 		await db.do ('DROP TABLE IF EXISTS tb_2')
-		await db.do ('CREATE TABLE tb_2 (id int PRIMARY KEY, label text)')
+		await db.createTempTable ('tb_2')
+		await db.do ('ALTER TABLE tb_2 ADD PRIMARY KEY (id)')
 
 		await db.insert ('tb_2', {id: 1, label: 'user'})
 		expect (await db.getArray ('SELECT * FROM tb_2')).toStrictEqual ([{id: 1, label: 'user'}])
@@ -54,7 +54,7 @@ test ('basic', async () => {
 			const os = await db.putStream ('tb_2', ['id', 'label'])
 			await new Promise ((ok, fail) => {
 				os.on ('error', fail)
-				os.on ('finish', ok)
+				os.on ('complete', ok)
 				Readable.from ([
 					'1\tadmin\n',
 					'2\tuser\n',
