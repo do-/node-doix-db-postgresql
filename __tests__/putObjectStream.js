@@ -1,7 +1,7 @@
 const Path = require ('path')
 const {DbModel} = require ('doix-db')
 const MockJob = require ('./lib/MockJob.js'), job = new MockJob ()
-const {DbPoolPg, DbLangPg} = require ('..')
+const {DbPoolPg} = require ('..')
 const {Readable} = require ('stream')
 
 const pool = new DbPoolPg ({
@@ -30,8 +30,8 @@ test ('bad args', async () => {
 
 		var db = await pool.toSet (job, 'db')
 
-		await expect (db.putStream ('tb_2', ['id', 'label'], {objectMode: 1})).rejects.toThrow ()
-		await expect (db.putStream ('tb_...', ['id', 'label'], {objectMode: true})).rejects.toThrow ()
+//		await expect (db.putObjectStream ('tb_2', ['id', 'label'], {objectMode: 1})).rejects.toThrow ()
+		await expect (db.putObjectStream ('tb_...', ['id', 'label'], {})).rejects.toThrow ()
 
 	}	
 	finally {
@@ -62,14 +62,8 @@ test ('basic', async () => {
 				{id: 1, label: 'admin'},
 				{id: 2, label: 'user'},
 			]
-		
-			const os = await db.putStream ('tb_2', ['id', 'label'], {objectMode: true})
 
-			await new Promise ((ok, fail) => {
-				os.on ('error', fail)
-				os.on ('complete', ok)
-				Readable.from (src).pipe (os)
-			})
+			await db.insert ('tb_2', src)
 
 			expect (await db.getArray ('SELECT * FROM tb_2 ORDER BY id')).toStrictEqual (src)
 
@@ -107,7 +101,7 @@ test ('bad data, xform', async () => {
 				{id: 2, label: 'user'},
 			]
 		
-			const os = await db.putStream ('tb_2', ['id', 'label'], {objectMode: true})
+			const os = await db.putObjectStream ('tb_2', ['id', 'label'])
 
 			await new Promise ((ok, fail) => {
 				os.on ('error', fail)
@@ -156,7 +150,7 @@ test ('bad data, db', async () => {
 				{id: 1, label: 'user'},
 			]
 		
-			const os = await db.putStream ('tb_2', ['id', 'label'], {objectMode: true})
+			const os = await db.putObjectStream ('tb_2', ['id', 'label'], {objectMode: true})
 
 			await new Promise ((ok, fail) => {
 				os.on ('error', fail)

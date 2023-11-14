@@ -47,11 +47,11 @@ test ('basic', async () => {
 
 		await db.do ('TRUNCATE tb_2')
 		
-		await expect (db.putStream ('tb_-1')).rejects.toThrow ()
+		await expect (db.putBinaryStream ('tb_-1')).rejects.toThrow ()
 
 		{
 		
-			const os = await db.putStream ('tb_2', ['id', 'label'])
+			const os = await db.putBinaryStream ('tb_2', ['id', 'label'])
 			await new Promise ((ok, fail) => {
 				os.on ('error', fail)
 				os.on ('complete', ok)
@@ -70,7 +70,7 @@ test ('basic', async () => {
 
 		{
 
-			const os = await db.putStream ('tb_2', ['id', 'label'])
+			const os = await db.putBinaryStream ('tb_2', ['id', 'label'])
 
 			await expect (new Promise ((ok, fail) => {
 				os.on ('error', fail)
