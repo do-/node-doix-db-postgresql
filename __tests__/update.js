@@ -72,11 +72,16 @@ test ('basic', async () => {
 
 			const os = await db.putBinaryStream ('tb_2', ['id', 'label'])
 
+			let err
+
 			await expect (new Promise ((ok, fail) => {
+				os.on ('error', _ => err = _)
 				os.on ('error', fail)
 				os.on ('finish', ok)
 				Readable.from (['zzz']).pipe (os)
 			})).rejects.toThrow ()
+
+			expect (err.stack).toMatch ('update.js')
 
 		}
 
