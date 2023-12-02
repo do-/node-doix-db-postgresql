@@ -44,7 +44,7 @@ test ('model', async () => {
 		await plan.loadStructure ()
 		plan.inspectStructure ()
 
-		for (const [sql, params] of plan.genDDL ()) await db.do (sql, params)
+		await db.doAll (plan.genDDL ())
 
 		await db.do (`SET SCHEMA '${schemaName}'`)
 
@@ -172,7 +172,7 @@ test ('model', async () => {
 
 			const plan = db.createMigrationPlan (); await plan.loadStructure (); plan.inspectStructure ()
 
-			for (const [sql, params] of plan.genDDL ()) await db.do (sql, params)
+			await db.doAll (plan.genDDL ())
 
 			{
 
