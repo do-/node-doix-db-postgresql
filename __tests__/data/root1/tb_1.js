@@ -16,16 +16,22 @@ module.exports = {
     ],
     
     keys: {
+
+        anomaly: null,
+        
         amount   : 'amount',
+        
         label   : {
         	parts:   ['label'],
         	options: ['UNIQUE', 'WHERE cnt > 0'],
             message: err => err.code,
         },
+
         label0   : {
         	parts:   ['label'],
         	options: ['UNIQUE', 'WHERE cnt = 0'],
         },
+
     },
 
     triggers: [
