@@ -93,6 +93,56 @@ test ('model', async () => {
 			
 			}
 
+			try {
+
+				await db.do ('INSERT INTO tb_1 (id, label, cnt) VALUES (?, ?, ?)', [-1, 'one', 10])
+
+			}
+			catch (err) {
+
+				expect (err.message).toBe (err.code)
+
+			}			
+
+			try {
+
+				await db.begin ()				
+				await db.do ('INSERT INTO tb_1 (id, label, cnt) VALUES (?, ?, ?)', [-1, 'zzz', -1])
+				await db.do ('INSERT INTO tb_1 (id, label, cnt) VALUES (?, ?, ?)', [-2, 'zzz', -1])
+
+			}
+			catch (err) {
+
+				// do nothing
+
+			}			
+			finally {
+
+				db.rollback ()
+
+			}
+
+			try {
+
+				await db.begin ()
+
+				await db.do ('CREATE UNIQUE INDEX ___label ON tb_2 (label)')
+
+				await db.do ('INSERT INTO tb_2 (id, label) VALUES (?, ?)', [-1, 'zzz'])
+				await db.do ('INSERT INTO tb_2 (id, label) VALUES (?, ?)', [-2, 'zzz'])
+
+			}
+			catch (err) {
+
+				// do nothing
+
+			}			
+			finally {
+
+				db.rollback ()
+
+			}
+
 		}
 		
 		{
