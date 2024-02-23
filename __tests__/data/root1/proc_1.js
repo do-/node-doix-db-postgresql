@@ -3,7 +3,7 @@ module.exports = {
     comment: 'Procedure 1',
     
     parameters: [
-    	'id int',
+    	'id int=0',
     ],
 
     lang: 'plpgsql',

@@ -50,7 +50,12 @@ test ('model', async () => {
 
 		{
 		
-			await db.do ('CALL proc_1 (0)')
+			await db.invoke ('proc_1')
+
+			expect (await db.invoke ('f_1', [1]), ).toBe (2)
+
+			await expect (db.invoke ('0')).rejects.toThrow ()
+			await expect (db.invoke ('tb_3')).rejects.toThrow ()
 			
 			{
 				
