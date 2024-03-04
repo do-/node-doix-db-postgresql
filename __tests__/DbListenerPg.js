@@ -66,3 +66,47 @@ test ('basic', async () => {
 	expect (result).toStrictEqual ({id: 2})
 
 })
+
+test ('failing', async () => {
+
+	const dbl = new DbListenerPg ({db, logger})
+
+	await expect (Promise.all ([
+
+		new Promise ((ok, fail) => {
+
+			dbl.add (new DbChannelPg (app, {
+				name: 'hotline',
+				on: {
+					start: function () {
+						this.rq = JSON.parse (this.notification.payload)
+					},
+					end: function () {
+						ok (this.result)
+					},
+					error: function () {
+						fail (this.error)
+					},
+				},
+			}))		
+		
+			dbl.add ({})
+
+		}),
+
+		(async () => {
+
+			await dbl.listen ()
+
+			const client = new pg.Client (db)
+			await client.connect ()
+			await client.query (`NOTIFY hotline, '{"type":"users","id":"two"}'`)
+			await client.end()
+		
+		})()
+	
+	])).rejects.toThrow ()
+
+	await dbl.close ()
+
+})
