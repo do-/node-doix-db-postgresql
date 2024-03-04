@@ -5,4 +5,5 @@ module.exports = {
 	DbChannelPg: require ('./lib/DbChannelPg.js'),
 	DbListenerPg: require ('./lib/DbListenerPg.js'),
 	DbListenerLifeCycleTrackerPg: require ('./lib/DbListenerLifeCycleTrackerPg.js'),
+	DbCallTrackerPg: require ('./lib/DbCallTrackerPg.js'),
 }
