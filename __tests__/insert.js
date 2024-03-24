@@ -46,6 +46,12 @@ test ('basic', async () => {
 		const r2 = await db.insert ('tb_3', {id: 2, label: 'alien'}, {onlyIfMissing: true})
 		expect (r2).toBe (true)
 
+		const r22 = await db.insert ('tb_3', {id: 2, label: 'alien'}, {onlyIfMissing: true, result: 'record'})
+		expect (r22).toBeUndefined ()
+
+		const r3 = await db.insert ('tb_3', {id: 3, label: '?'}, {result: 'record'})
+		expect (r3).toStrictEqual ({id: 3, label: '?'})
+
 	}
 	
 	finally {
