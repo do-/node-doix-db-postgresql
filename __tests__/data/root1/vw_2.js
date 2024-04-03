@@ -8,6 +8,8 @@ module.exports = {
     
     pk: 'id',
 
-    sql: 'SELECT 2 id',
+    wrap: true,
+
+    sql: `SELECT 'two' label, 2 id`,
 
 }
