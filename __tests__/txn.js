@@ -34,6 +34,9 @@ test ('basic', async () => {
 
 		expect (db.txn).toBeNull ()
 
+		await db.commit ()		
+		await db.rollback ()		
+
 		await db.begin ()
 		expect (db.txn).toStrictEqual ({})
 
