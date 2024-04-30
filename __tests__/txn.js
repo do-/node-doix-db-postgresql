@@ -121,3 +121,63 @@ test ('error', async () => {
 	}
 
 })
+
+test ('auto', async () => {
+
+	const pool = new DbPoolPg ({
+		db: {
+			connectionString: process.env.CONNECTION_STRING,
+		},
+	})
+
+	pool.isToBegin = db => 'action' in db.job.rq
+
+	{
+
+		try {
+
+			const job = new MockJob ()
+
+			pool.logger = job.logger
+
+			job.rq = {type: 'users', id: 1}
+
+			var db = await pool.toSet (job, 'db')
+
+			expect (db.isAutoCommit ()).toBe (true)
+
+		}	
+		finally {
+
+			await db.release ()
+
+		}
+
+	}
+
+	{
+
+		try {
+
+			const job = new MockJob ()
+
+			pool.logger = job.logger
+
+			job.rq = {type: 'users', action: 'create'}
+
+			var db = await pool.toSet (job, 'db')
+
+			expect (db.isAutoCommit ()).toBe (false)
+
+		}	
+		finally {
+
+			await db.release ()
+
+		}
+
+	}
+
+	await pool.pool.end ()
+
+})
