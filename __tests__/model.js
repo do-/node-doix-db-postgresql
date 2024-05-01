@@ -50,6 +50,8 @@ test ('model', async () => {
 
 		{
 		
+			expect (await db.invoke ('pg_encoding_to_char', [29]), ).toBe ('WIN1250')
+
 			await db.invoke ('proc_1')
 
 			expect (await db.invoke ('f_1', [1]), ).toBe (2)
