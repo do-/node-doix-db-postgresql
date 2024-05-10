@@ -136,6 +136,8 @@ test ('auto', async () => {
 
 		try {
 
+			var isReleased = false
+
 			const job = new MockJob ()
 
 			pool.logger = job.logger
@@ -144,12 +146,18 @@ test ('auto', async () => {
 
 			var db = await pool.toSet (job, 'db')
 
+			db.on ('released', () => isReleased = true)
+
 			expect (db.isAutoCommit ()).toBe (true)
 
 		}	
 		finally {
 
+			expect (isReleased).toBe (false)
+
 			await db.release ()
+
+			expect (isReleased).toBe (true)
 
 		}
 
@@ -159,6 +167,8 @@ test ('auto', async () => {
 
 		try {
 
+			var isReleased = false
+
 			const job = new MockJob ()
 
 			pool.logger = job.logger
@@ -167,12 +177,18 @@ test ('auto', async () => {
 
 			var db = await pool.toSet (job, 'db')
 
+			db.on ('released', () => isReleased = true)
+
 			expect (db.isAutoCommit ()).toBe (false)
 
 		}	
 		finally {
 
+			expect (isReleased).toBe (false)
+
 			await db.release ()
+
+			expect (isReleased).toBe (true)
 
 		}
 
