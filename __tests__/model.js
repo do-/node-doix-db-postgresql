@@ -1,7 +1,7 @@
 const Path = require ('path')
 const {DbModel} = require ('doix-db')
 const MockJob = require ('./lib/MockJob.js'), job = new MockJob ()
-const {DbPoolPg} = require ('..')
+const {DbPoolPg, DbViewQueuePg} = require ('..')
 
 const pool = new DbPoolPg ({
 	db: {
@@ -45,6 +45,38 @@ test ('model', async () => {
 		plan.inspectStructure ()
 
 		await db.doAll (plan.genDDL ())
+
+		{
+
+			const q1 = model.find ('q_1')
+
+			expect (q1).toBeInstanceOf (DbViewQueuePg)
+
+			const msg = await db.peek (q1)
+
+			expect (msg).toStrictEqual ({id: 1})
+
+			{
+
+				const job = {}
+
+				q1.setRq (job, msg)
+
+				expect (job.rq).toStrictEqual ({type: 'msg', action: 'send', id: 1})
+
+			}
+
+			{
+
+				const job = {}
+
+				q1.setRq (job, null)
+
+				expect (job.rq).toStrictEqual ({})
+
+			}
+
+		}
 
 		await db.do (`SET SCHEMA '${schemaName}'`)
 
