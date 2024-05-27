@@ -1,6 +1,6 @@
 {
   "name": "doix-db-postgresql",
-  "version": "1.0.38",
+  "version": "1.0.39",
   "description": "PostgreSQL support for doix",
   "main": "index.js",
   "files": [
@@ -22,14 +22,14 @@
   },
   "homepage": "https://github.com/do-/node-doix-db-postgresql#readme",
   "peerDependencies": {
-    "doix-db": "^1.0.48"
+    "doix-db": "^1.0.49"
   },
   "dependencies": {
     "only": "^0.0.2",
-    "pg": "^8.11.3",
+    "pg": "^8.11.5",
     "pg-copy-streams": "^6.0.6",
-    "pg-cursor": "^2.10.3",
-    "pg-query-stream": "^4.5.3"
+    "pg-cursor": "^2.10.5",
+    "pg-query-stream": "^4.5.5"
   },
   "devDependencies": {
     "jest": "^29.6.1"
