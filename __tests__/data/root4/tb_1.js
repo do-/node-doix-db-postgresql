@@ -8,4 +8,20 @@ module.exports = {
     
     pk: 'id',
 
+    triggers: [
+
+    	{
+			phase  : 'AFTER INSERT',
+			action : 'FOR EACH ROW',
+			sql    : `
+				BEGIN
+					NOTIFY hotline, 'q_1';
+					RETURN NEW;
+				END;
+			`,
+    	},
+
+    ],
+
+
 }

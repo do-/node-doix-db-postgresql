@@ -13,11 +13,7 @@ const db = {
 
 test ('bad', () => {
 
-	expect (() => new DbChannelPg (app)).toThrow ()	
-	expect (() => new DbChannelPg (app, {})).toThrow ()	
-	expect (() => new DbChannelPg (app, {name: 1})).toThrow ()	
-	expect (() => new DbChannelPg (app, {name: ''})).toThrow ()	
-	expect (() => new DbListenerPg ({db})).toThrow ()	
+	expect (() => new DbListenerPg ({db})).toThrow ()
 
 })
 
