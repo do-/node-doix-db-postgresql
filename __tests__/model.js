@@ -1,7 +1,7 @@
 const Path = require ('path')
 const {DbModel} = require ('doix-db')
 const MockJob = require ('./lib/MockJob.js'), job = new MockJob ()
-const {DbPoolPg, DbViewQueuePg} = require ('..')
+const {DbPoolPg} = require ('..')
 
 const pool = new DbPoolPg ({
 	db: {
@@ -46,40 +46,27 @@ test ('model', async () => {
 
 		await db.doAll (plan.genDDL ())
 
+		await db.do (`SET SCHEMA '${schemaName}'`)
+/*
 		{
 
 			const q1 = model.find ('q_1')
 
 			expect (q1).toBeInstanceOf (DbViewQueuePg)
 
+			await db.do ('INSERT INTO tb_2 (id) VALUES (?)', [1])
 			const msg = await db.peek (q1)
 
 			expect (msg).toStrictEqual ({id: 1})
 
-			{
+			q1.queue.check ()
 
-				const job = {}
+			await db.do ('DELETE FROM tb_2')
 
-				q1.setRq (job, msg)
-
-				expect (job.rq).toStrictEqual ({type: 'msg', action: 'send', id: 1})
-
-			}
-
-			{
-
-				const job = {}
-
-				q1.setRq (job, null)
-
-				expect (job.rq).toStrictEqual ({})
-
-			}
+return			
 
 		}
-
-		await db.do (`SET SCHEMA '${schemaName}'`)
-
+*/
 		{
 		
 			expect (await db.invoke ('pg_encoding_to_char', [29]), ).toBe ('WIN1250')

@@ -1,6 +1,6 @@
 const pg = require ('pg')
 const Path = require ('path')
-const {Application, ConsoleLogger} = require ('doix')
+const {Application} = require ('doix')
 const {DbListenerPg, DbChannelPg} = require ('..')
 
 const logger = {log: _ => {}}//new ConsoleLogger ()

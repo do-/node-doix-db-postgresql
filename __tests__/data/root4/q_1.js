@@ -13,6 +13,6 @@ module.exports = {
         order: 'id',
     },
 
-    sql: `SELECT UNNEST (ARRAY [2, 1, 3]) id`,
+    sql: `SELECT id FROM doix_test_db_4.tb_1`,
 
 }
