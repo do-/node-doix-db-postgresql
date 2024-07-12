@@ -127,16 +127,8 @@ test ('queue: listener', async () => {
 			const view = model.find ('q_1'), {queue} = view
 
 			expect (() => new DbQueuePg (app, {view})).toThrow ('order')
-			
-			await db.insert ('tb_1', {id: 2})
 
-			const ch = new DbChannelPg (app, {name: 'hotline'})
-			dbl.add (ch)
-			await dbl.listen ()
-			
-			await db.insert ('tb_1', {id: 1})
-
-			const a_out = await new Promise ((ok, fail) => {
+			const fetch = async () => new Promise ((ok, fail) => {
 
 				const a = []
 
@@ -145,8 +137,22 @@ test ('queue: listener', async () => {
 				queue.on ('job-finished', () => queue.pending.size ? null : ok (a))
 
 			})
+			
+			await db.insert ('tb_1', {id: 2})
+			await db.insert ('tb_1', {id: 0})
 
-			expect (a_out).toStrictEqual ([1, 2])
+			const ch = new DbChannelPg (app, {name: 'hotline'})
+			dbl.add (ch)
+			await dbl.listen ()
+
+			expect (await fetch ()).toStrictEqual ([0, 2])
+			
+			await db.insert ('tb_1', {id: 3})
+			await db.insert ('tb_1', {id: 1})
+
+			expect ((await fetch ()).sort ()).toStrictEqual ([1, 3])
+
+			expect (parseInt (await db.getScalar ('SELECT COUNT(*) FROM tb_1'))).toBe (0)
 
 			await db.do (`DROP SCHEMA IF EXISTS ${schemaName} CASCADE`)
 

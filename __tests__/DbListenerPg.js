@@ -26,7 +26,7 @@ test ('basic', async () => {
 		new Promise ((ok, fail) => {
 
 			dbl.add (new DbChannelPg (app, {
-				name: 'hotline',
+				name: 'coolline',
 				on: {
 					start: function () {
 						this.rq = JSON.parse (this.notification.payload)
@@ -50,7 +50,7 @@ test ('basic', async () => {
 
 			const client = new pg.Client (db)
 			await client.connect ()
-			await client.query (`NOTIFY hotline, '{"type":"users","id":2}'`)
+			await client.query (`NOTIFY coolline, '{"type":"users","id":2}'`)
 			await client.end()
 		
 		})()
@@ -72,7 +72,7 @@ test ('failing', async () => {
 		new Promise ((ok, fail) => {
 
 			dbl.add (new DbChannelPg (app, {
-				name: 'hotline',
+				name: 'coolline',
 				on: {
 					start: function () {
 						this.rq = JSON.parse (this.notification.payload)
@@ -96,7 +96,7 @@ test ('failing', async () => {
 
 			const client = new pg.Client (db)
 			await client.connect ()
-			await client.query (`NOTIFY hotline, '{"type":"users","id":"two"}'`)
+			await client.query (`NOTIFY coolline, '{"type":"users","id":"two"}'`)
 			await client.end()
 		
 		})()

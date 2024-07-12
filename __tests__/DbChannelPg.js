@@ -24,31 +24,43 @@ test ('bad', () => {
 	expect (() => new DbChannelPg (app, {name: ''})).toThrow ()	
 
 	const ch = new DbChannelPg (app, {name: 'hotline'})
-	ch.setRouter ({})	
+	ch.router = {}
 
 })
 
-test ('getQueue', () => {
+test ('getQueue', async () => {
+
+	app.pools.get ('db2').wrapper = Object
 
 	const pool = app.pools.get ('db')
 
-	const model = new DbModel ({
-		src: {
-			schemaName,
-			root: Path.join (__dirname, 'data', 'root4')
-		},
-		db: pool
-	})
+	try {
 
-	model.loadModules ()
+		const model = new DbModel ({
+			src: {
+				schemaName,
+				root: Path.join (__dirname, 'data', 'root4')
+			},
+			db: pool
+		})
+	
+		model.loadModules ()
+	
+		const dbl = new DbListenerPg ({db, logger})
+	
+		const ch = new DbChannelPg (app, {name: 'hotline'})
+	
+		dbl.add (ch)
+	
+		expect (ch.router).toBe (dbl)
+		expect (ch.getQueue ({})).toBeUndefined ()
+		expect (ch.getQueue ({payload: 'q_1'})).toBeInstanceOf (DbQueuePg)
 
-	const dbl = new DbListenerPg ({db, logger})
+	}
+	finally {
 
-	const ch = new DbChannelPg (app, {name: 'hotline'})
+		await pool.pool.end ()
 
-	dbl.add (ch)
-
-	expect (ch.getQueue ({})).toBeUndefined ()
-	expect (ch.getQueue ({payload: 'q_1'})).toBeInstanceOf (DbQueuePg)
+	}
 
 })
