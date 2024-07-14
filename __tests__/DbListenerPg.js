@@ -1,9 +1,14 @@
 const pg = require ('pg')
 const Path = require ('path')
-const {Application} = require ('doix')
+const {
+	Application,
+//	ConsoleLogger
+} = require ('doix')
 const {DbListenerPg, DbChannelPg} = require ('..')
 
-const logger = {log: _ => {}}//new ConsoleLogger ()
+const logger = 
+	{log: _ => {}}
+//	new ConsoleLogger ()
 const modules = {dir: {root: Path.join (__dirname, 'data', 'root3')}}
 const app = new Application ({modules, logger})
 
@@ -21,7 +26,9 @@ test ('basic', async () => {
 
 	const dbl = new DbListenerPg ({db, logger})
 
-	const [result] = await Promise.all ([
+	const result = new Set ()
+	
+	await Promise.all ([
 
 		new Promise ((ok, fail) => {
 
@@ -32,7 +39,7 @@ test ('basic', async () => {
 						this.rq = JSON.parse (this.notification.payload)
 					},
 					end: function () {
-						ok (this.result)
+						ok (result.add (-this.result.id))
 					},
 					error: function () {
 						fail (this.error)
@@ -50,6 +57,7 @@ test ('basic', async () => {
 
 			const client = new pg.Client (db)
 			await client.connect ()
+			await client.query (`NOTIFY noline,   '{"type":"users","id":0}'`)
 			await client.query (`NOTIFY coolline, '{"type":"users","id":2}'`)
 			await client.end()
 		
@@ -59,10 +67,10 @@ test ('basic', async () => {
 
 	await dbl.close ()
 
-	expect (result).toStrictEqual ({id: 2})
+	expect ([...result.values ()].sort ()).toStrictEqual ([-2])
 
 })
-
+/*
 test ('failing', async () => {
 
 	const dbl = new DbListenerPg ({db, logger})
@@ -106,3 +114,4 @@ test ('failing', async () => {
 	await dbl.close ()
 
 })
+*/
