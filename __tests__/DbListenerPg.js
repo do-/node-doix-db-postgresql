@@ -4,8 +4,7 @@ const {
 	Application,
 //	ConsoleLogger
 } = require ('doix')
-const {DbListenerPg, DbChannelPg} = require ('..')
-const { channel } = require('diagnostics_channel')
+const {DbListenerPg, DbServicePg} = require ('..')
 
 const logger = 
 	{log: _ => {}}
@@ -37,7 +36,7 @@ test ('basic', async () => {
 
 		new Promise ((ok, fail) => {
 
-			dbl.add (new DbChannelPg (app, {
+			dbl.add (new DbServicePg (app, {
 				on: {
 					start: function () {
 						this.rq = JSON.parse (this.notification.payload)
@@ -83,7 +82,7 @@ test ('failing', async () => {
 
 		new Promise ((ok, fail) => {
 
-			dbl.add (new DbChannelPg (app, {
+			dbl.add (new DbServicePg (app, {
 				on: {
 					start: function () {
 						this.rq = JSON.parse (this.notification.payload)
