@@ -5,6 +5,7 @@ const {
 //	ConsoleLogger
 } = require ('doix')
 const {DbListenerPg, DbChannelPg} = require ('..')
+const { channel } = require('diagnostics_channel')
 
 const logger = 
 	{log: _ => {}}
@@ -18,13 +19,17 @@ const db = {
 
 test ('bad', () => {
 
-	expect (() => new DbListenerPg ({db})).toThrow ()
+	expect (() => new DbListenerPg ({})).toThrow ('channel not set')
+	expect (() => new DbListenerPg ({channel: ''})).toThrow ('channel not set')
+	expect (() => new DbListenerPg ({channel: 11})).toThrow ('string')
+
+	expect (() => new DbListenerPg ({channel: 'hotline', db})).toThrow ('logger not set')
 
 })
 
 test ('basic', async () => {
 
-	const dbl = new DbListenerPg ({db, logger})
+	const dbl = new DbListenerPg ({channel: 'coolline', db, logger})
 
 	const result = new Set ()
 	
@@ -33,7 +38,6 @@ test ('basic', async () => {
 		new Promise ((ok, fail) => {
 
 			dbl.add (new DbChannelPg (app, {
-				name: 'coolline',
 				on: {
 					start: function () {
 						this.rq = JSON.parse (this.notification.payload)
@@ -70,17 +74,16 @@ test ('basic', async () => {
 	expect ([...result.values ()].sort ()).toStrictEqual ([-2])
 
 })
-/*
+
 test ('failing', async () => {
 
-	const dbl = new DbListenerPg ({db, logger})
+	const dbl = new DbListenerPg ({channel: 'coolline', db, logger})
 
 	await expect (Promise.all ([
 
 		new Promise ((ok, fail) => {
 
 			dbl.add (new DbChannelPg (app, {
-				name: 'coolline',
 				on: {
 					start: function () {
 						this.rq = JSON.parse (this.notification.payload)
@@ -114,4 +117,3 @@ test ('failing', async () => {
 	await dbl.close ()
 
 })
-*/

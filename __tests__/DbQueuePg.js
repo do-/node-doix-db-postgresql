@@ -4,6 +4,7 @@ const {Application
 } = require ('doix')
 const {DbModel} = require ('doix-db')
 const {DbPoolPg, DbQueuePg, DbListenerPg, DbQueuesRouterPg} = require ('..')
+const { channel } = require('diagnostics_channel')
 const MockJob = require ('./lib/MockJob.js'), job = new MockJob ()
 
 const logger = 
@@ -91,12 +92,11 @@ test ('queue: check', async () => {
 
 test ('queue: listener', async () => {
 
-	const dbl = new DbListenerPg ({db, logger})
+	const dbl = new DbListenerPg ({channel: 'hotline', db, logger})
 
 	const app = new Application ({modules, logger, pools: {db: new DbPoolPg ({db, logger})}})
 
 	const ch = new DbQueuesRouterPg (app)
-	ch.name = 'hotline'			
 
 	expect (() => ch.getQueueName ()).toThrow ()
 	expect (() => ch.getQueueName ('')).toThrow ()
@@ -155,9 +155,9 @@ test ('queue: listener', async () => {
 
 				expect (() => {ch.router = {}}).toThrow ()
 
-				const dbl = new DbListenerPg ({db: {connectionString: 'postgresql://?:?@?:????/?'}, logger})
+				const dbl = new DbListenerPg ({channel: 'noline', db, logger})
 				ch.router = dbl
-				
+
 			}
 
 			dbl.add (ch)
