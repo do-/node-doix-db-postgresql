@@ -8,4 +8,5 @@ module.exports = {
 	DbCallTrackerPg: require ('./lib/DbCallTrackerPg.js'),
 	DbViewQueuePg: require ('./lib/DbViewQueuePg.js'),
 	DbQueuePg: require ('./lib/DbQueuePg.js'),
+	DbQueuesRouterPg: require ('./lib/DbQueuesRouterPg.js'),
 }

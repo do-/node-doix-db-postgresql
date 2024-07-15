@@ -1,9 +1,9 @@
 const Path = require ('path')
 const {Application
-//	, ConsoleLogger
+	, ConsoleLogger
 } = require ('doix')
 const {DbModel} = require ('doix-db')
-const {DbPoolPg, DbQueuePg, DbListenerPg, DbChannelPg} = require ('..')
+const {DbPoolPg, DbQueuePg, DbListenerPg, DbQueuesRouterPg} = require ('..')
 const MockJob = require ('./lib/MockJob.js'), job = new MockJob ()
 
 const logger = 
@@ -92,7 +92,17 @@ test ('queue: check', async () => {
 test ('queue: listener', async () => {
 
 	const dbl = new DbListenerPg ({db, logger})
+
 	const app = new Application ({modules, logger, pools: {db: new DbPoolPg ({db, logger})}})
+
+	const ch = new DbQueuesRouterPg (app)
+	ch.name = 'hotline'			
+
+	expect (() => ch.getQueueName ()).toThrow ()
+	expect (() => ch.getQueueName ('')).toThrow ()
+	expect (() => ch.getQueueName ({})).toThrow ()
+	expect (() => ch.getQueueName ({payload: 0})).toThrow ()
+	expect (() => ch.getQueueName ({payload: ''})).toThrow ()
 
 	const schemaName = 'doix_test_db_4'
 
@@ -114,7 +124,7 @@ test ('queue: listener', async () => {
 
 			await db.do (`DROP SCHEMA IF EXISTS ${schemaName} CASCADE`)
 			await db.do (`SET SCHEMA '${schemaName}'`)
-		
+
 			model.loadModules ()
 			
 			const plan = db.createMigrationPlan ()
@@ -141,8 +151,22 @@ test ('queue: listener', async () => {
 			await db.insert ('tb_1', {id: 2})
 			await db.insert ('tb_1', {id: 0})
 
-			const ch = new DbChannelPg (app, {name: 'hotline'})
+			{
+
+				expect (() => {ch.router = {}}).toThrow ()
+
+				const dbl = new DbListenerPg ({db: {connectionString: 'postgresql://?:?@?:????/?'}, logger})
+				ch.router = dbl
+				
+			}
+
 			dbl.add (ch)
+
+			expect (() => ch.getQueue ({payload: '    '})).toThrow ('not found')
+			expect (() => ch.getQueue ({payload: 'tb_1'})).toThrow ('Not a queue')
+
+			expect (ch.router).toBe (dbl)
+
 			await dbl.listen ()
 
 			expect (await fetch ()).toStrictEqual ([0, 2])
