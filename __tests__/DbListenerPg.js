@@ -36,11 +36,8 @@ test ('basic', async () => {
 
 		new Promise ((ok, fail) => {
 
-			dbl.add (new DbServicePg (app, {
+			const svc = new DbServicePg (app, {
 				on: {
-					start: function () {
-						this.rq = JSON.parse (this.notification.payload)
-					},
 					end: function () {
 						ok (result.add (-this.result.id))
 					},
@@ -48,7 +45,13 @@ test ('basic', async () => {
 						fail (this.error)
 					},
 				},
-			}))		
+			})
+
+			expect (() => svc.process ()).toThrow ('not called')
+			expect (() => svc.process (111)).toThrow ('not called')
+			expect (() => svc.process ({})).toThrow ('not called')
+
+			dbl.add (svc)
 		
 			dbl.add ({})
 
