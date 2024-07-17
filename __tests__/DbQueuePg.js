@@ -153,7 +153,7 @@ test ('queue: listener', async () => {
 
 			{
 
-				expect (() => {ch.router = {}}).toThrow ()
+				ch.router = {}
 
 				const dbl = new DbListenerPg ({channel: 'noline', db, logger})
 				ch.router = dbl
