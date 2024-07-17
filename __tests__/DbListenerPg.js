@@ -36,18 +36,33 @@ test ('basic', async () => {
 
 		new Promise ((ok, fail) => {
 
-			const svc = new DbServicePg (app, {
-				on: {
-					end: function () {
-						ok (result.add (-this.result.id))
+			dbl.add (
+				new DbServicePg (app, {
+					test: _ => false,
+					on: {
+						end: function () {
+							ok (result.add (this.result.id))
+						},
+						error: function () {
+							fail (this.error)
+						},
 					},
-					error: function () {
-						fail (this.error)
-					},
-				},
-			})
+				})
+			)
 
-			dbl.add (svc)
+			dbl.add (
+				new DbServicePg (app, {
+					test: _ => true,
+					on: {
+						end: function () {
+							ok (result.add (-this.result.id))
+						},
+						error: function () {
+							fail (this.error)
+						},
+					},
+				})
+			)
 		
 			dbl.add ({})
 
