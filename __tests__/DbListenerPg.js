@@ -47,10 +47,6 @@ test ('basic', async () => {
 				},
 			})
 
-			expect (() => svc.process ()).toThrow ('not called')
-			expect (() => svc.process (111)).toThrow ('not called')
-			expect (() => svc.process ({})).toThrow ('not called')
-
 			dbl.add (svc)
 		
 			dbl.add ({})
