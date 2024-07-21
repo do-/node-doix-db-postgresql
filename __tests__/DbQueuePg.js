@@ -1,10 +1,9 @@
 const Path = require ('path')
 const {Application
-	, ConsoleLogger
+//	, ConsoleLogger
 } = require ('doix')
 const {DbModel} = require ('doix-db')
 const {DbPoolPg, DbQueuePg, DbListenerPg, DbQueuesRouterPg} = require ('..')
-const { channel } = require('diagnostics_channel')
 const MockJob = require ('./lib/MockJob.js'), job = new MockJob ()
 
 const logger = 
@@ -90,13 +89,12 @@ test ('queue: check', async () => {
 
 })
 
-test ('queue: listener', async () => {
-
-	const dbl = new DbListenerPg ({channel: 'hotline', db, logger})
+test ('router getQueueName fails', async () => {
 
 	const app = new Application ({modules, logger, pools: {db: new DbPoolPg ({db, logger})}})
 
 	const ch = new DbQueuesRouterPg (app)
+	ch.router = {}
 
 	expect (() => ch.getQueueName ()).toThrow ()
 	expect (() => ch.getQueueName ('')).toThrow ()
@@ -104,9 +102,27 @@ test ('queue: listener', async () => {
 	expect (() => ch.getQueueName ({payload: 0})).toThrow ()
 	expect (() => ch.getQueueName ({payload: ''})).toThrow ()
 
-	const schemaName = 'doix_test_db_4'
+})
+
+test ('queue: listener', async () => {
+
+	const dbl = new DbListenerPg ({channel: 'hotline', db, logger})
+
+	const app = new Application ({modules, logger, pools: {
+		db: new DbPoolPg ({db, logger}),
+		db2: new DbPoolPg ({db: {connectionString: ''}, logger}),
+	}})
 
 	const pool = app.pools.get ('db')
+
+	const a = [], ch = new DbQueuesRouterPg (app, {
+		on: {
+			'job-end': job => a.push (job.result),
+			'error': []
+		}
+	})
+
+	const schemaName = 'doix_test_db_4'
 
 	try {
 
@@ -139,27 +155,14 @@ test ('queue: listener', async () => {
 			expect (() => new DbQueuePg (app, {view})).toThrow ('order')
 
 			const fetch = async () => new Promise ((ok, fail) => {
-
-				const a = []
-
-				queue.on ('job-end',   job => a.push (job.result))
 				queue.on ('job-error', job => fail (job.error))
 				queue.on ('job-finished', () => queue.pending.size ? null : ok (a))
-
 			})
 			
 			await db.insert ('tb_1', {id: 2})
 			await db.insert ('tb_1', {id: 0})
 
-			{
-
-				ch.router = {}
-
-				const dbl = new DbListenerPg ({channel: 'noline', db, logger})
-				ch.router = dbl
-
-			}
-
+			dbl.add (new DbQueuesRouterPg (app, {test: _ => false}))
 			dbl.add (ch)
 
 			expect (() => ch.getQueue ({payload: '    '})).toThrow ('not found')
@@ -170,6 +173,7 @@ test ('queue: listener', async () => {
 			await dbl.listen ()
 
 			expect (await fetch ()).toStrictEqual ([0, 2])
+			a.length = 0 
 			
 			await db.insert ('tb_1', {id: 3})
 			await db.insert ('tb_1', {id: 1})
@@ -179,6 +183,7 @@ test ('queue: listener', async () => {
 			expect (parseInt (await db.getScalar ('SELECT COUNT(*) FROM tb_1'))).toBe (0)
 
 			await db.do (`DROP SCHEMA IF EXISTS ${schemaName} CASCADE`)
+
 
 		}
 		finally {
