@@ -2,8 +2,8 @@ const Path = require ('path')
 const {Application
 //	, ConsoleLogger
 } = require ('doix')
-const {DbModel} = require ('doix-db')
-const {DbPoolPg, DbQueuePg, DbListenerPg, DbQueuesRouterPg} = require ('..')
+const {DbModel, DbQueue} = require ('doix-db')
+const {DbPoolPg, DbListenerPg, DbQueuesRouterPg} = require ('..')
 const MockJob = require ('./lib/MockJob.js'), job = new MockJob ()
 
 const logger = 
@@ -50,8 +50,6 @@ test ('queue: check', async () => {
 			await db.doAll (plan.genDDL ())
 
 			const view = model.find ('q_1'), {queue} = view
-
-			expect (() => new DbQueuePg (app, {view})).toThrow ('order')
 
 			const a_in = [1, 2]
 			
@@ -151,8 +149,6 @@ test ('queue: listener', async () => {
 			await db.doAll (plan.genDDL ())
 
 			const view = model.find ('q_1'), {queue} = view
-
-			expect (() => new DbQueuePg (app, {view})).toThrow ('order')
 
 			const fetch = async () => new Promise ((ok, fail) => {
 				queue.on ('job-error', job => fail (job.error))

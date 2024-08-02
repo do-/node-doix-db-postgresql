@@ -7,7 +7,5 @@ module.exports = {
 	DbListenerPg: require ('./lib/notifications/DbListenerPg.js'),
 	DbListenerLifeCycleTrackerPg: require ('./lib/notifications/DbListenerLifeCycleTrackerPg.js'),
 	DbCallTrackerPg: require ('./lib/DbCallTrackerPg.js'),
-	DbViewQueuePg: require ('./lib/DbViewQueuePg.js'),
-	DbQueuePg: require ('./lib/DbQueuePg.js'),
 	DbQueuesRouterPg: require ('./lib/DbQueuesRouterPg.js'),
 }
