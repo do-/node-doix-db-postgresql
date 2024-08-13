@@ -1,14 +1,21 @@
 const pg = require ('pg')
 const Path = require ('path')
-const {
-	Application,
-//	ConsoleLogger
-} = require ('doix')
+const {Application} = require ('doix')
 const {DbListenerPg, DbServicePg} = require ('..')
 
-const logger = 
-	{log: _ => {}}
-//	new ConsoleLogger ()
+const {Writable} = require ('stream')
+const winston = require ('winston')
+const logger = winston.createLogger({
+	transports: [
+//	  new winston.transports.Console (),
+	  new winston.transports.Stream ({stream: new Writable ({write(){}})})
+	],
+	format: winston.format.combine (
+		winston.format.timestamp ({format: 'YYYY-MM-DD[T]hh:mm:ss.SSS'}),
+		winston.format.printf ((i => `${i.timestamp} ${i.event} ${i.id} ${i.event === 'finish' ? i.elapsed + ' ms' : i.message}${i.details ? ' ' + JSON.stringify (i.details) : ''}`))
+	),
+})
+
 const modules = {dir: {root: Path.join (__dirname, 'data', 'root3')}}
 const app = new Application ({modules, logger})
 
@@ -22,7 +29,7 @@ test ('bad', () => {
 	expect (() => new DbListenerPg ({channel: ''})).toThrow ('channel not set')
 	expect (() => new DbListenerPg ({channel: 11})).toThrow ('string')
 
-	expect (() => new DbListenerPg ({channel: 'hotline', db})).toThrow ('logger not set')
+	expect (() => new DbListenerPg ({channel: 'hotline', db})).toThrow ('`logger` not set')
 
 })
 
@@ -38,6 +45,7 @@ test ('basic', async () => {
 
 			dbl.add (
 				new DbServicePg (app, {
+					name: 'never',
 					test: _ => false,
 					on: {
 						end: function () {
@@ -52,6 +60,7 @@ test ('basic', async () => {
 
 			dbl.add (
 				new DbServicePg (app, {
+					name: 'always',
 					test: _ => true,
 					on: {
 						end: function () {
@@ -90,17 +99,15 @@ test ('basic', async () => {
 
 test ('failing', async () => {
 
-	const dbl = new DbListenerPg ({channel: 'coolline', db, logger})
+	const dbl = new DbListenerPg ({channel: 'hotline', db, logger})
 
 	await expect (Promise.all ([
 
 		new Promise ((ok, fail) => {
 
 			dbl.add (new DbServicePg (app, {
-				on: {
-					start: function () {
-						this.rq = JSON.parse (this.notification.payload)
-					},
+				name: 'nope',
+				on: {					
 					end: function () {
 						ok (this.result)
 					},
@@ -120,7 +127,7 @@ test ('failing', async () => {
 
 			const client = new pg.Client (db)
 			await client.connect ()
-			await client.query (`NOTIFY coolline, '{"type":"users","id":"two"}'`)
+			await client.query (`NOTIFY hotline, '{"type":"users","id":"two"}'`)
 			await client.end()
 		
 		})()

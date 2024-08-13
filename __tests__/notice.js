@@ -1,8 +1,9 @@
 const MockJob = require ('./lib/MockJob.js'), job = new MockJob ()
-
-const a = []; job.logger = {log: s => a.push (s)}
-
+const { execPath } = require('process')
 const {DbPoolPg} = require ('..')
+const {Writable} = require ('stream')
+const winston = require ('winston')
+const normalizeSpaceLogFormat = require ('string-normalize-space').logform
 
 const pool = new DbPoolPg ({
 	db: {
@@ -12,8 +13,6 @@ const pool = new DbPoolPg ({
 
 const schemaName = 'notice_test', procName = schemaName + '.test'
 
-pool.logger = job.logger
-
 afterAll(async () => {
 
 	await pool.pool.end ()
@@ -21,6 +20,28 @@ afterAll(async () => {
 })
 
 test ('basic', async () => {
+
+	let s = ''
+
+	const stream = new Writable ({
+		write (r, _, cb) {
+			s += r.toString ()
+			cb ()
+		}
+
+	})
+
+	const tr = new winston.transports.Stream ({
+		stream,
+		format: winston.format.combine (
+			normalizeSpaceLogFormat ()
+			, winston.format.printf ((i => `${i.event} ${i.message} ${i.details ? JSON.stringify (i.details) : ''}`.trim ()))
+		)
+	})
+	
+	pool.logger = job.logger
+
+	pool.logger.add (tr)
 
 	try {
 
@@ -37,11 +58,15 @@ test ('basic', async () => {
 		await db.do (`CALL ${procName} ()`)
 		await db.do (`DROP SCHEMA IF EXISTS ${schemaName} CASCADE`)
 
-		expect (a.filter (i => i.level === 'notice' && i.message.indexOf ('test notice') > -1)).toHaveLength (1)
+		const a = s.trim ().split ('\n').map (s => s.trim ()).filter (s => /^notice /.test (s))
 
-	}
-	
+		expect (a).toHaveLength (3)
+		expect (a [1]).toMatch (/^notice test notice/)
+
+	}	
 	finally {
+
+		pool.logger.remove (tr)
 
 		await db.release ()
 

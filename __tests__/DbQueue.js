@@ -2,13 +2,19 @@ const Path = require ('path')
 const {Application
 //	, ConsoleLogger
 } = require ('doix')
-const {DbModel, DbQueue} = require ('doix-db')
+const {DbModel} = require ('doix-db')
 const {DbPoolPg, DbListenerPg, DbQueuesRouterPg} = require ('..')
 const MockJob = require ('./lib/MockJob.js'), job = new MockJob ()
 
-const logger = 
-{log: _ => {}}
-//new ConsoleLogger ()
+const {Writable} = require ('stream')
+const winston = require ('winston')
+const logger = winston.createLogger({
+	transports: [
+//	  new winston.transports.Console (),
+	  new winston.transports.Stream ({stream: new Writable ({write(){}})})
+	]
+})
+
 const modules = {dir: {root: Path.join (__dirname, 'data', 'root3')}}
 
 const db = {
