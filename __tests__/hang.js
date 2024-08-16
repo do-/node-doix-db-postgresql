@@ -18,7 +18,7 @@ afterAll(async () => {
 
 test ('basic', async () => {
 
-	var db = await pool.toSet (job, 'db')
+	var db = await pool.setResource (job, 'db')
 
 	const nop = _ => null
 

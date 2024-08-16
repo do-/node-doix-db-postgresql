@@ -28,7 +28,7 @@ test ('bad args', async () => {
 
 	try {
 
-		var db = await pool.toSet (job, 'db')
+		var db = await pool.setResource (job, 'db')
 
 //		await expect (db.putObjectStream ('tb_2', ['id', 'label'], {objectMode: 1})).rejects.toThrow ()
 		await expect (db.putObjectStream ('tb_...', ['id', 'label'], {})).rejects.toThrow ()
@@ -51,7 +51,7 @@ test ('basic', async () => {
 
 	try {
 
-		var db = await pool.toSet (job, 'db')
+		var db = await pool.setResource (job, 'db')
 		
 		await db.do ('DROP TABLE IF EXISTS tb_2')
 		await db.createTempTable ('tb_2')
@@ -89,7 +89,7 @@ test ('bad data, xform', async () => {
 
 	try {
 
-		var db = await pool.toSet (job, 'db')
+		var db = await pool.setResource (job, 'db')
 		
 		await db.do ('DROP TABLE IF EXISTS tb_2')
 		await db.createTempTable ('tb_2')
@@ -137,7 +137,7 @@ test ('bad data, db', async () => {
 
 	try {
 
-		var db = await pool.toSet (job, 'db')
+		var db = await pool.setResource (job, 'db')
 		
 		await db.do ('DROP TABLE IF EXISTS tb_2')
 		await db.createTempTable ('tb_2')

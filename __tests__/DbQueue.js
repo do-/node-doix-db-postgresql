@@ -39,7 +39,7 @@ test ('queue: check', async () => {
 			db: pool
 		})
 
-		const db = await pool.toSet (job, 'db')
+		const db = await pool.setResource (job, 'db')
 
 		try {
 
@@ -138,7 +138,7 @@ test ('queue: listener', async () => {
 			db: pool
 		})
 
-		const db = await pool.toSet (job, 'db')
+		const db = await pool.setResource (job, 'db')
 
 		try {
 

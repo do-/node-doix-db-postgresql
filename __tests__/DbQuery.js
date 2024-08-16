@@ -21,7 +21,7 @@ test ('op', async () => {
 
 	try {
 
-		var db = await pool.toSet (job, 'db')
+		var db = await pool.setResource (job, 'db')
 
 		const m = new DbModel ({src, db: pool})
 
@@ -58,7 +58,7 @@ test ('limit', async () => {
 
 	try {
 
-		var db = await pool.toSet (job, 'db')
+		var db = await pool.setResource (job, 'db')
 
 		const m = new DbModel ({src, db: pool})
 

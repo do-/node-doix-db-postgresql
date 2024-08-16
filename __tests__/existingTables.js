@@ -45,7 +45,7 @@ test ('error', async () => {
 	
 		new DbModel ({db: pool})
 
-		var db = await pool.toSet (job, 'db'), backup = db.lang.genSelectColumnsSql
+		var db = await pool.setResource (job, 'db'), backup = db.lang.genSelectColumnsSql
 		
 		db.lang.genSelectColumnsSql = () => 'noSQL'
 
@@ -79,7 +79,7 @@ test ('basic', async () => {
 
 		new DbModel ({db: pool, src: {schemaName: dbName}})
 	
-		var db = await pool.toSet (job, 'db')
+		var db = await pool.setResource (job, 'db')
 		
 		await db.do (`DROP SCHEMA IF EXISTS ${dbName} CASCADE`)
 		await db.do (`CREATE SCHEMA ${dbName}`)

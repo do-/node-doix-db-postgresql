@@ -31,7 +31,7 @@ test ('model', async () => {
 			db: pool
 		})
 
-		var db = await pool.toSet (job, 'db')
+		var db = await pool.setResource (job, 'db')
 
 		await db.do (`DROP SCHEMA IF EXISTS ${schemaName} CASCADE`)
 

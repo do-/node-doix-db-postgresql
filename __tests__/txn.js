@@ -26,7 +26,7 @@ test ('basic', async () => {
 
 	try {
 
-		var db = await pool.toSet (job, 'db')
+		var db = await pool.setResource (job, 'db')
 
 		await db.do ('DROP TABLE IF EXISTS tb_22')
 		await db.createTempTable ('tb_22')
@@ -80,7 +80,7 @@ test ('error', async () => {
 
 	try {
 
-		var db = await pool.toSet (job, 'db')
+		var db = await pool.setResource (job, 'db')
 
 		await db.do ('DROP TABLE IF EXISTS tb_22')
 		await db.createTempTable ('tb_22')
@@ -109,7 +109,7 @@ test ('error', async () => {
 		{
 			try {
 				delete job.error
-				var db = await pool.toSet (job, 'db')
+				var db = await pool.setResource (job, 'db')
 				expect (await db.getArray ('SELECT * FROM tb_22')).toStrictEqual ([{id: 1, label: 'user'}])
 			}	
 			finally {
@@ -144,7 +144,7 @@ test ('auto', async () => {
 
 			job.rq = {type: 'users', id: 1}
 
-			var db = await pool.toSet (job, 'db')
+			var db = await pool.setResource (job, 'db')
 
 			db.on ('released', () => isReleased = true)
 
@@ -175,7 +175,7 @@ test ('auto', async () => {
 
 			job.rq = {type: 'users', action: 'create'}
 
-			var db = await pool.toSet (job, 'db')
+			var db = await pool.setResource (job, 'db')
 
 			db.on ('released', () => isReleased = true)
 

@@ -27,7 +27,7 @@ test ('basic', async () => {
 
 	try {
 
-		var db = await pool.toSet (job, 'db')
+		var db = await pool.setResource (job, 'db')
 
 		await db.do ('DROP TABLE IF EXISTS tb_2')
 		await db.createTempTable ('tb_2')

@@ -19,7 +19,7 @@ test ('e7707', async () => {
 	
 	try {
 	
-		var db = await pool.toSet (job, 'db')
+		var db = await pool.setResource (job, 'db')
 
 		const s = await db.getObject ('...')	
 
@@ -41,7 +41,7 @@ test ('sequence', async () => {
 	
 	try {
 	
-		var db = await pool.toSet (job, 'db')
+		var db = await pool.setResource (job, 'db')
 
 		const o = await db.getObject ('SELECT * FROM generate_series (?::int, ?) id', [1, 10])
 
@@ -60,7 +60,7 @@ test ('1-to-1', async () => {
 	
 	try {
 	
-		var db = await pool.toSet (job, 'db')
+		var db = await pool.setResource (job, 'db')
 
 		const o = await db.getObject ('SELECT 1 id', [])
 
@@ -79,7 +79,7 @@ test ('1 array', async () => {
 	
 	try {
 	
-		var db = await pool.toSet (job, 'db')
+		var db = await pool.setResource (job, 'db')
 
 		const o = await db.getObject ('SELECT 1 id', [], {rowMode: 'array'})
 
@@ -98,7 +98,7 @@ test ('default', async () => {
 	
 	try {
 	
-		var db = await pool.toSet (job, 'db')
+		var db = await pool.setResource (job, 'db')
 
 		const o = await db.getObject ('SELECT 1 id WHERE false', [], {notFound: {}})
 
@@ -117,7 +117,7 @@ test ('custom default', async () => {
 	
 	try {
 	
-		var db = await pool.toSet (job, 'db')
+		var db = await pool.setResource (job, 'db')
 		
 		const DEF = {id: -1}
 
@@ -140,7 +140,7 @@ test ('custom error', async () => {
 
 	try {
 	
-		var db = await pool.toSet (job, 'db')
+		var db = await pool.setResource (job, 'db')
 		
 		const o = await db.getObject ('SELECT 1 id WHERE false', [], {notFound: DEF})
 	

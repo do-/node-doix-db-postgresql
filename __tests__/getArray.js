@@ -19,7 +19,7 @@ test ('e7707', async () => {
 	
 	try {
 	
-		var db = await pool.toSet (job, 'db')
+		var db = await pool.setResource (job, 'db')
 				
 		await expect (db.do ('...')).rejects.toThrow ()
 		await expect (db.getArray ('SELECT 1 AS id', [], {maxRows: -1})).rejects.toThrow ()
@@ -39,7 +39,7 @@ test ('getArray 1', async () => {
 	
 	try {
 
-		var db = await pool.toSet (job, 'db')
+		var db = await pool.setResource (job, 'db')
 
 		const a = await db.getArray ('SELECT 1::int4 AS id')
 
@@ -60,7 +60,7 @@ test ('getArray 1 array', async () => {
 	
 	try {
 	
-		var db = await pool.toSet (job, 'db')
+		var db = await pool.setResource (job, 'db')
 
 		const a = await db.getArray ('SELECT 1 AS id', [], {rowMode: 'array'})
 
@@ -79,7 +79,7 @@ test ('getArray 1 scalar', async () => {
 	
 	try {
 	
-		var db = await pool.toSet (job, 'db')
+		var db = await pool.setResource (job, 'db')
 
 		const a = await db.getArray ('SELECT 1 AS id', [], {rowMode: 'scalar'})
 
@@ -100,7 +100,7 @@ test ('drop create insert select', async () => {
 
 	try {
 
-		var db = await pool.toSet (job, 'db')
+		var db = await pool.setResource (job, 'db')
 
 		for (const sql of [
 
@@ -130,7 +130,7 @@ test ('1001', async () => {
 	
 	try {
 	
-		var db = await pool.toSet (job, 'db')
+		var db = await pool.setResource (job, 'db')
 		
 		const sql = 'SELECT * FROM generate_series (?::int, ?) id'
 		

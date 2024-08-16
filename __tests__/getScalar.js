@@ -19,7 +19,7 @@ test ('e7707', async () => {
 	
 	try {
 	
-		var db = await pool.toSet (job, 'db')
+		var db = await pool.setResource (job, 'db')
 
 		const s = await db.getScalar ('...')	
 
@@ -60,7 +60,7 @@ test ('1-to-1', async () => {
 	
 	try {
 	
-		var db = await pool.toSet (job, 'db')
+		var db = await pool.setResource (job, 'db')
 
 		const o = await db.getScalar ('SELECT 1 id', [])
 
@@ -79,7 +79,7 @@ test ('default', async () => {
 	
 	try {
 	
-		var db = await pool.toSet (job, 'db')
+		var db = await pool.setResource (job, 'db')
 
 		const o = await db.getScalar ('SELECT 1 id WHERE false', [])
 
@@ -98,7 +98,7 @@ test ('custom default', async () => {
 	
 	try {
 	
-		var db = await pool.toSet (job, 'db')
+		var db = await pool.setResource (job, 'db')
 
 		const DEF = -1
 
@@ -121,7 +121,7 @@ test ('custom error', async () => {
 
 	try {
 	
-		var db = await pool.toSet (job, 'db')
+		var db = await pool.setResource (job, 'db')
 		
 		const o = await db.getScalar ('SELECT 1 id WHERE false', [], {notFound: DEF})
 

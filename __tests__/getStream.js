@@ -19,7 +19,7 @@ test ('e7707', async () => {
 	
 	try {
 
-		var db = await pool.toSet (job, 'db')
+		var db = await pool.setResource (job, 'db')
 
 		const s = await db.getStream ('...')	
 
@@ -42,7 +42,7 @@ test ('one record', async () => {
 	
 	try {
 	
-		var db = await pool.toSet (job, 'db')
+		var db = await pool.setResource (job, 'db')
 
 		const s = await db.getStream ('SELECT 1 id', [])
 
@@ -63,7 +63,7 @@ test ('arrays', async () => {
 	
 	try {
 	
-		var db = await pool.toSet (job, 'db')
+		var db = await pool.setResource (job, 'db')
 
 		const s = await db.getStream ('SELECT * FROM generate_series (?::int, ?) id', [1, 10], {rowMode: 'array'})
 
