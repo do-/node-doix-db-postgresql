@@ -6,6 +6,7 @@ const {DbModel} = require ('doix-db')
 const {DbPoolPg, DbListenerPg, DbQueuesRouterPg} = require ('..')
 const MockJob = require ('./lib/MockJob.js'), job = new MockJob ()
 
+const {Tracker} = require ('events-to-winston')
 const {Writable} = require ('stream')
 const winston = require ('winston')
 const logger = winston.createLogger({
@@ -97,7 +98,9 @@ test ('router getQueueName fails', async () => {
 
 	const app = new Application ({modules, logger, pools: {db: new DbPoolPg ({db, logger})}})
 
-	const ch = new DbQueuesRouterPg (app)
+	expect (() => new DbQueuesRouterPg (app)).toThrow ()
+
+	const ch = new DbQueuesRouterPg (app, {name: 'QR'})
 	ch.router = {}
 
 	expect (() => ch.getQueueName ()).toThrow ()
@@ -120,6 +123,7 @@ test ('queue: listener', async () => {
 	const pool = app.pools.get ('db')
 
 	const a = [], ch = new DbQueuesRouterPg (app, {
+		name: 'QR',
 		on: {
 			'job-end': job => a.push (job.result),
 			'error': []
@@ -164,7 +168,7 @@ test ('queue: listener', async () => {
 			await db.insert ('tb_1', {id: 2})
 			await db.insert ('tb_1', {id: 0})
 
-			dbl.add (new DbQueuesRouterPg (app, {test: _ => false}))
+			dbl.add (new DbQueuesRouterPg (app, {test: _ => false, name: 'QRF'}))
 			dbl.add (ch)
 
 			expect (() => ch.getQueue ({payload: '    '})).toThrow ('not found')
