@@ -1,6 +1,7 @@
 const Path = require ('path')
 const {DbServicePg, DbNotificationPg, DbPoolPg} = require ('..')
 const {Application} = require ('doix')
+const {Router: {TEST_MESSAGE}} = require ('protocol-agnostic-router')
 
 const {Writable} = require ('stream')
 const winston = require ('winston')
@@ -27,9 +28,9 @@ test ('test', async () => {
 
 	const svc = new DbServicePg (app, {name: '1'})
 
-	expect (svc.test (new DbNotificationPg({payload: 'some_queue'}))).toBe (false)
-	expect (svc.test (new DbNotificationPg({payload: '{'}))).toBe (false)
-	expect (svc.test (new DbNotificationPg({payload: '{]'}))).toBe (false)
-	expect (svc.test (new DbNotificationPg({payload: '{"type":"users"}'}))).toBe (true)
+	expect (svc [TEST_MESSAGE] (new DbNotificationPg({payload: 'some_queue'}))).toBe (false)
+	expect (svc [TEST_MESSAGE] (new DbNotificationPg({payload: '{'}))).toBe (false)
+	expect (svc [TEST_MESSAGE] (new DbNotificationPg({payload: '{]'}))).toBe (false)
+	expect (svc [TEST_MESSAGE] (new DbNotificationPg({payload: '{"type":"users"}'}))).toBe (true)
 
 })

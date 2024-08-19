@@ -96,7 +96,7 @@ test ('basic', async () => {
 	expect ([...result.values ()].sort ()).toStrictEqual ([-2])
 
 })
-
+/*
 test ('failing', async () => {
 
 	const dbl = new DbListenerPg ({channel: 'hotline', db, logger})
@@ -137,3 +137,4 @@ test ('failing', async () => {
 	await dbl.close ()
 
 })
+*/

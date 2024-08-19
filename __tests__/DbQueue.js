@@ -1,12 +1,9 @@
 const Path = require ('path')
-const {Application
-//	, ConsoleLogger
-} = require ('doix')
+const {Application} = require ('doix')
 const {DbModel} = require ('doix-db')
 const {DbPoolPg, DbListenerPg, DbQueuesRouterPg} = require ('..')
 const MockJob = require ('./lib/MockJob.js'), job = new MockJob ()
 
-const {Tracker} = require ('events-to-winston')
 const {Writable} = require ('stream')
 const winston = require ('winston')
 const logger = winston.createLogger({
