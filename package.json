@@ -1,6 +1,6 @@
 {
   "name": "doix-db-postgresql",
-  "version": "1.0.68",
+  "version": "1.0.69",
   "description": "PostgreSQL support for doix",
   "main": "index.js",
   "files": [
@@ -26,10 +26,10 @@
     "protocol-agnostic-router": "^1.0.0"
   },
   "dependencies": {
-    "pg": "^8.12.0",
+    "pg": "^8.13.3",
     "pg-copy-streams": "^6.0.6",
-    "pg-cursor": "^2.11.0",
-    "pg-query-stream": "^4.6.0"
+    "pg-cursor": "^2.12.3",
+    "pg-query-stream": "^4.7.3"
   },
   "devDependencies": {
     "jest": "^29.6.1",
