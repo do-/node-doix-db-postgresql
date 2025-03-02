@@ -53,12 +53,12 @@ test ('drop create insert select', async () => {
 
 		const s = await db.getStream (`COPY ${dst} TO STDOUT (FORMAT CSV)`)
 
-		const a = []; for await (const r of s) a.push (r.toString ())
+		const a = []; for await (const r of s) a.push (r)
 
-		expect (a).toStrictEqual ([
-			'1,"o,""\r\n""ne",2000-01-01,f\n', 
+		expect (Buffer.concat (a).toString ()).toBe (
+			'1,"o,""\r\n""ne",2000-01-01,f\n'+
 			'2,"t,wo",,t\n'
-		])
+		)
 
 	}
 	finally {
