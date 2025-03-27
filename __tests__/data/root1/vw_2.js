@@ -10,6 +10,6 @@ module.exports = {
 
     wrap: true,
 
-    sql: `SELECT 'two' label, 2 id`,
+    sql: `SELECT 'two' AS label, 2 AS id`,
 
 }
