@@ -58,6 +58,15 @@ module.exports = {
 
     	},
 
+    	{
+
+            phase  : 'AFTER INSERT OR UPDATE',
+
+            action : 'FOR EACH ROW /*WHEN (TRUE)*/',
+
+            sql    : null,
+            
+        },
     ],
 
 }

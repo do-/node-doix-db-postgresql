@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/do-/node-doix-db-postgresql#readme",
   "peerDependencies": {
-    "doix-db": "^1.0.66",
+    "doix-db": "^1.0.69",
     "protocol-agnostic-router": "^1.0.0"
   },
   "dependencies": {
