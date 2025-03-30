@@ -47,26 +47,7 @@ test ('model', async () => {
 		await db.doAll (plan.genDDL ())
 
 		await db.do (`SET SCHEMA '${schemaName}'`)
-/*
-		{
 
-			const q1 = model.find ('q_1')
-
-			expect (q1).toBeInstanceOf (DbViewQueuePg)
-
-			await db.do ('INSERT INTO tb_2 (id) VALUES (?)', [1])
-			const msg = await db.peek (q1)
-
-			expect (msg).toStrictEqual ({id: 1})
-
-			q1.queue.check ()
-
-			await db.do ('DELETE FROM tb_2')
-
-return			
-
-		}
-*/
 		{
 		
 			expect (await db.invoke ('pg_encoding_to_char', [29]), ).toBe ('WIN1250')
@@ -170,8 +151,10 @@ return
 			}
 
 		}
-		
+
 		{
+
+			await db.do (`ALTER TABLE tb_0 ADD drop_me TEXT, ADD drop_me_too TEXT`)
 
 			const plan = db.createMigrationPlan (); await plan.loadStructure (); plan.inspectStructure ()
 

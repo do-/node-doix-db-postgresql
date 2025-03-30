@@ -102,6 +102,11 @@ test ('drop create insert select', async () => {
 
 		var db = await pool.setResource (job, 'db')
 
+		const schemaName = 'doix_test_db_5'
+		await db.do (`DROP SCHEMA IF EXISTS ${schemaName} CASCADE`)
+		await db.do (`CREATE SCHEMA ${schemaName}`)
+		await db.do (`SET SCHEMA '${schemaName}'`)
+
 		for (const sql of [
 
 			`DROP TABLE IF EXISTS ${dst}`,

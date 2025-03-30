@@ -4,6 +4,8 @@ module.exports = {
 
     columns: {
         id       : 'int    // PK',
+        drop_me  : null,
+        drop_me_too : null,
     },
 
     pk: 'id',
