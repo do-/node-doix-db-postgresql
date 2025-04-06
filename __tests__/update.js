@@ -20,6 +20,65 @@ afterAll(async () => {
 
 })
 
+test ('23505 0', async () => {
+
+	try {
+
+		var db = await pool.setResource (job, 'db')
+
+		await db.do ('DROP TABLE IF EXISTS uuu')
+		await db.do ('CREATE TABLE uuu (id INT PRIMARY KEY)')
+
+		await db.do ('INSERT INTO uuu VALUES (1)')
+
+		try {
+			await db.do ('INSERT INTO uuu VALUES (1)')
+		}
+		catch (err) {
+			expect (err.cause.code).toBe ('23505')
+		}
+
+	}
+	
+	finally {
+
+		await db.release ()
+
+	}
+
+})
+
+test ('23505 1', async () => {
+
+	const m = new DbModel ({src, db: pool})
+	m.loadModules ()
+
+	try {
+
+		var db = await pool.setResource (job, 'db')
+
+		await db.do ('DROP TABLE IF EXISTS uuu')
+		await db.do ('CREATE TABLE uuu (id INT PRIMARY KEY)')
+
+		await db.do ('INSERT INTO uuu VALUES (1)')
+
+		try {
+			await db.do ('INSERT INTO uuu VALUES (1)')
+		}
+		catch (err) {
+			expect (err.cause.code).toBe ('23505')
+		}
+
+	}
+	
+	finally {
+
+		await db.release ()
+
+	}
+
+})
+
 test ('basic', async () => {
 
 	const m = new DbModel ({src, db: pool})
@@ -80,8 +139,8 @@ test ('basic', async () => {
 				os.on ('finish', ok)
 				Readable.from (['zzz']).pipe (os)
 			})).rejects.toThrow ()
-
-			expect (err.stack).toMatch ('update.js')
+			
+			expect (err.cause.stack).toMatch ('update.js')
 
 		}
 

@@ -1,18 +1,18 @@
 module.exports = {
 
-    select_users: async function () {
+    select: async function () {
     
 		return [{id: 1}]
         
     },
 
-    get_item_of_users: async function () {
+    getItem: async function () {
 
-    	const {rq: {id}} = this
+      const {request: {id}} = this
     	
     	if (isNaN (id)) throw Error ('Invalid id')
 
-		return {id}
+		  return {id}
 
     },
     

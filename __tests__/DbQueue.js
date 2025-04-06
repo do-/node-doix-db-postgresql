@@ -1,7 +1,7 @@
 const Path = require ('path')
 const {Application} = require ('doix')
 const {DbModel} = require ('doix-db')
-const {DbPoolPg, DbListenerPg, DbQueuesRouterPg} = require ('..')
+const {DbPoolPg, DbQueuesRouterPg, DbListenerPg} = require ('..')
 const MockJob = require ('./lib/MockJob.js'), job = new MockJob ()
 
 const {Writable} = require ('stream')
@@ -18,6 +18,23 @@ const modules = {dir: {root: Path.join (__dirname, 'data', 'root3')}}
 const db = {
 	connectionString: process.env.CONNECTION_STRING,
 }
+
+test ('bad', async () => {
+
+	const app = new Application ({modules, logger, pools: {db: new DbPoolPg ({db, logger})}})
+
+	expect (() => new DbQueuesRouterPg (app)).toThrow ()
+
+	const ch = new DbQueuesRouterPg (app, {name: 'QR'})
+	ch.router = {}
+
+	expect (() => ch.getQueueName ()).toThrow ()
+	expect (() => ch.getQueueName ('')).toThrow ()
+	expect (() => ch.getQueueName ({})).toThrow ()
+	expect (() => ch.getQueueName ({payload: 0})).toThrow ()
+	expect (() => ch.getQueueName ({payload: ''})).toThrow ()
+
+})
 
 test ('queue: check', async () => {
 
@@ -56,18 +73,18 @@ test ('queue: check', async () => {
 			const view = model.find ('q_1'), {queue} = view
 
 			const a_in = [1, 2]
-			
+
 			await db.insert ('tb_1', a_in.map (id => ({id})))
-			
+
 			const a_out = await new Promise ((ok, fail) => {
 
 				const a = []
 
-				queue.on ('job-end',   job => a.push (job.result))
-				queue.on ('job-error', job => fail (job.error))
-				queue.on ('job-finished', () => queue.pending.size ? null : ok (a))
+			 	queue.on ('job-end',   job => a.push (job.result))
+			 	queue.on ('job-error', job => fail (job.error))
+			 	queue.on ('job-next',   () => {if (queue.pending.size === 0) ok (a)})
 
-				queue.check ()
+			 	queue.check ()
 
 			})
 
@@ -91,22 +108,6 @@ test ('queue: check', async () => {
 
 })
 
-test ('router getQueueName fails', async () => {
-
-	const app = new Application ({modules, logger, pools: {db: new DbPoolPg ({db, logger})}})
-
-	expect (() => new DbQueuesRouterPg (app)).toThrow ()
-
-	const ch = new DbQueuesRouterPg (app, {name: 'QR'})
-	ch.router = {}
-
-	expect (() => ch.getQueueName ()).toThrow ()
-	expect (() => ch.getQueueName ('')).toThrow ()
-	expect (() => ch.getQueueName ({})).toThrow ()
-	expect (() => ch.getQueueName ({payload: 0})).toThrow ()
-	expect (() => ch.getQueueName ({payload: ''})).toThrow ()
-
-})
 
 test ('queue: listener', async () => {
 
@@ -159,7 +160,7 @@ test ('queue: listener', async () => {
 
 			const fetch = async () => new Promise ((ok, fail) => {
 				queue.on ('job-error', job => fail (job.error))
-				queue.on ('job-finished', () => queue.pending.size ? null : ok (a))
+				queue.on ('job-next', () => queue.pending.size ? null : ok (a))
 			})
 			
 			await db.insert ('tb_1', {id: 2})

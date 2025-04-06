@@ -4,7 +4,7 @@ module.exports = {
 
     columns: {
         id       : 'int    // PK',
-        label    : 'text?=on   // Human readable',
+        label    : "text?='on'   // Human readable",
         amount   : 'decimal(10,2)=0 // Some money',
         cnt      : 'int=0 // Mutations counter',
     },
@@ -24,7 +24,7 @@ module.exports = {
         label   : {
         	parts:   ['label'],
         	options: ['UNIQUE', 'WHERE cnt > 0'],
-            message: err => err.code,
+            message: ({detail}) => /\=\((.*?)\)/.exec (detail) [1]
         },
 
         label0   : {

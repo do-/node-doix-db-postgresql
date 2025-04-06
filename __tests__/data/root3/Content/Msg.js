@@ -1,8 +1,8 @@
 module.exports = {
 
-    do_send_msg: async function () {
+    doSend: async function () {
     
-		  const {db, rq: {id}} = this
+		  const {db, request: {id}} = this
 
       await db.do ('DELETE FROM doix_test_db_4.tb_1 WHERE id = ?', [id])
 

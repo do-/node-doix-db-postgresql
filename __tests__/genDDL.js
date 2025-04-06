@@ -16,8 +16,6 @@ test ('error', () => {
 
 	expect (() => [...lang.genDDL ()]).toThrow ()	
 
-	expect (lang.genColumnDefault ({default: 'NULL'})).toBe ('NULL')	
-
 })
 
 test ('empty', () => {

@@ -100,16 +100,23 @@ test ('model', async () => {
 			
 			}
 
-			try {
+			{
 
-				await db.do ('INSERT INTO tb_1 (id, label, cnt) VALUES (?, ?, ?)', [-1, 'one', 10])
+				const LABEL = 'one'
+
+				try {
+
+					await db.do ('INSERT INTO tb_1 (id, label, cnt) VALUES (?, ?, ?)', [-1, LABEL, 10])
+	
+				}
+				catch (err) {
+	
+					expect (JSON.parse (err.message).message).toBe (LABEL)
+	
+				}
 
 			}
-			catch (err) {
 
-				expect (err.message).toBe (err.code)
-
-			}			
 
 			try {
 

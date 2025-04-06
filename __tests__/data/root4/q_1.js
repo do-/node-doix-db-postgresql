@@ -9,7 +9,7 @@ module.exports = {
     pk: 'id',
 
     queue: {
-        rq:    {type: 'msg', action: 'send'},
+        request: {type: 'msg', action: 'send'},
         order: 'id',
     },
 
