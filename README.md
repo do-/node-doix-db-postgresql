@@ -2,4 +2,4 @@
 ![Jest coverage](./badges/coverage-jest%20coverage.svg)
 
 # doix-db-postgresql
-`doix-db-postgresql` is a plug in for the [doix](https://github.com/do-/node-doix) framework implementing an interface to the [PostgreSQL](https://www.postgresql.org/) DBMS.
+`doix-db-postgresql` is a plug in for the [doix](https://github.com/do-/node-doix) framework implementing an interface to [MongoDB](https://www.mongodb.com/).
