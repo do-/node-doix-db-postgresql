@@ -3,6 +3,7 @@ const {Application} = require ('doix')
 const {DbModel} = require ('doix-db')
 const {DbPoolPg, DbQueuesRouterPg, DbListenerPg} = require ('..')
 const MockJob = require ('./lib/MockJob.js'), job = new MockJob ()
+const {Tracker}        = require ('events-to-winston')
 
 const {Writable} = require ('stream')
 const winston = require ('winston')
@@ -128,6 +129,8 @@ test ('queue: listener', async () => {
 		}
 	})
 
+	expect (ch [Tracker.LOGGING_ID]).toBe ('QR')
+
 	const schemaName = 'doix_test_db_4'
 
 	try {
@@ -204,4 +207,4 @@ test ('queue: listener', async () => {
 
 	}
 
-})
+}, 10000)
